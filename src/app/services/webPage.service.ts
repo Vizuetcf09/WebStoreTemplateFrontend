@@ -24,7 +24,6 @@ export class WebPageService {
         const products = ProductMapper.mapProductsItemsToProductArray(resp);
         this.productsSignal.set(products);
         this.loadingProductSignal.set(false);
-        console.log(products);
       });
   }
 
