@@ -1,10 +1,11 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component } from "@angular/core";
+import { Header } from "../../../layout/header/header.component";
 
 @Component({
   selector: 'Hero',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Header],
   templateUrl: './hero.componet.html'
 })
 export class Hero {

@@ -4,7 +4,6 @@ import { Hero } from "./components/hero/hero.componet";
 import { WebPageService } from "../../services/webPage.service";
 import { Products } from './components/products/products.component';
 
-
 @Component({
   selector: 'app-home',
   standalone: true,

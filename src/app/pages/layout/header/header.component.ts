@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
+  selector: 'Header',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
