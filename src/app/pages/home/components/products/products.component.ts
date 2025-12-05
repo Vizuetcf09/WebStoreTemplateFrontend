@@ -7,7 +7,7 @@ import { Product } from "../../../../interfaces/products.interfaces";
   selector: 'Products',
   standalone: true,
   imports: [CommonModule, Card],
-  templateUrl: './products.component.html'
+  templateUrl: 'products.component.html'
 })
 export class Products {
   @Input() products: Product[] = [];

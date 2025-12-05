@@ -1,4 +1,5 @@
-<div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 w-full max-w-sm mx-auto">
+<section
+  class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 w-full max-w-sm mx-auto">
 
   <!-- Product Image -->
   <div class="flex justify-center mb-8 h-48">
@@ -6,19 +7,17 @@
   </div>
 
   <!-- Product Info -->
-  <div class="text-center mb-4">
+  <header class="text-center mb-4">
     <h2 class="text-xl font-bold text-gray-900 mb-1">{{ product.name }}</h2>
-    <p class="text-sm text-gray-500 font-medium tracking-wide uppercase">3 BAGS</p>
-    <!-- Placeholder or derived if available, using static for now to match style -->
-  </div>
+  </header>
 
   <!-- Bottom Row: Description & Price -->
-  <div class="flex items-end justify-between mt-auto">
+
+  <body class="flex items-end justify-between mt-auto">
     <p class="text-sm text-gray-500 max-w-[60%] text-left leading-tight">{{ product.description }}</p>
 
-    <div class="bg-purple-100 text-purple-900 font-bold py-1 px-3 rounded-xl text-sm">
+    <a class="bg-purple-100 text-purple-900 font-bold py-1 px-3 rounded-xl text-sm">
       {{ product.price | currency }}
-    </div>
-  </div>
-
-</div>
+    </a>
+  </body>
+</section>
