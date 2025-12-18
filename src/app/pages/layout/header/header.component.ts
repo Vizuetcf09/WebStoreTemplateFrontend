@@ -14,6 +14,7 @@ export class Header {
   menuItems = [
     { label: 'Home', link: '/' },
     { label: 'Products', link: '/products' },
+    { label: 'Store', link: '/store' },
   ];
 
   toggleMenu() {
