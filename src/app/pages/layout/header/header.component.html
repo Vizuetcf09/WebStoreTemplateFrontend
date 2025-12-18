@@ -1,41 +1,55 @@
-<header class="flex justify-center lg:p-4 py-2 px-2 z-50 ">
-  <!-- Pill Container -->
+<header class="flex justify-center lg:p-4 py-2 px-2 z-50">
+  <!-- Unified Container -->
   <div
-    class="w-full max-w-7xl fixed bg-brand-green rounded-3xl px-8 py-3 flex justify-between items-center shadow-lg z-50">
+    class="relative bg-brand-green rounded-3xl shadow-lg z-50 transition-all duration-500 ease-in-out overflow-hidden"
+    [ngClass]="isMenuOpen ? 'w-full max-w-lg h-[500px] p-8' : 'w-full max-w-7xl h-auto px-8 py-3'">
 
-    <!-- Logo -->
-    <div class="text-3xl font-black text-brand-dark tracking-tighter">
-      <a href="/"> Web/Store
-      </a>
+    <!-- Top Row: Logo & Controls -->
+    <div class="flex justify-between items-center w-full">
+      <!-- Logo -->
+      <div class="text-3xl font-black text-brand-dark tracking-tighter">
+        <a routerLink="/"> Web/Store </a>
+      </div>
+
+      <!-- Desktop Menu (Hidden on Mobile) -->
+      <nav class="hidden md:flex items-center gap-8 font-bold text-brand-dark text-lg"
+        [ngClass]="{'opacity-0 pointer-events-none': isMenuOpen}">
+
+        @for (item of menuItems; track item.link) {
+        <a [routerLink]="item.link" class="hover:opacity-70 transition-opacity">
+          {{ item.label }}
+        </a>
+        }
+
+      </nav>
+
+      <!-- Mobile Toggle Buttons -->
+      <div class="md:hidden">
+        <button (click)="toggleMenu()" class="flex flex-col gap-1.5 focus:outline-none z-50">
+          <span class="block w-8 h-1 bg-brand-dark rounded-full transition-all duration-300"
+            [ngClass]="{'rotate-45 translate-y-2.5': isMenuOpen}">
+          </span>
+          <span class="block w-8 h-1 bg-brand-dark rounded-full transition-all duration-300"
+            [ngClass]="{'opacity-0': isMenuOpen}">
+          </span>
+          <span class="block w-8 h-1 bg-brand-dark rounded-full transition-all duration-300"
+            [ngClass]="{'-rotate-45 -translate-y-2.5': isMenuOpen}">
+          </span>
+        </button>
+      </div>
     </div>
 
-    <!-- Desktop Menu -->
-    <nav class="hidden md:flex items-center gap-8 font-bold text-brand-dark text-lg">
-      <a *ngFor="let item of menuItems" [routerLink]="item.link" class="hover:opacity-70 transition-opacity">
+    <!-- Mobile Menu Links -->
+    <nav
+      class="md:hidden flex flex-col gap-6 font-bold text-brand-dark text-2xl opacity-0 transition-opacity duration-300 delay-100"
+      [ngClass]="{'opacity-100': isMenuOpen, 'pointer-events-none': !isMenuOpen}">
+
+      @for (item of menuItems; track item.link) {
+      <a [routerLink]="item.link" (click)="toggleMenu()" class="hidden hover:opacity-70 transition-opacity">
         {{ item.label }}
       </a>
-    </nav>
+      }
 
-    <!-- Mobile Menu Button -->
-    <button (click)="toggleMenu()" class="md:hidden flex flex-col gap-1.5 focus:outline-none z-50">
-      <span class="block w-8 h-1 bg-brand-dark rounded-full transition-all duration-300"
-        [ngClass]="{'rotate-45 translate-y-2.5': isMenuOpen}"></span>
-      <span class="block w-8 h-1 bg-brand-dark rounded-full transition-all duration-300"
-        [ngClass]="{'opacity-0': isMenuOpen}"></span>
-      <span class="block w-8 h-1 bg-brand-dark rounded-full transition-all duration-300"
-        [ngClass]="{'-rotate-45 -translate-y-2.5': isMenuOpen}"></span>
-    </button>
-  </div>
-
-  <!-- Mobile Menu Dropdown -->
-  <div
-    class="absolute top-full left-0 w-full bg-brand-green overflow-hidden transition-all duration-300 ease-in-out z-40"
-    [ngClass]="isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'">
-    <nav class="flex flex-col items-center gap-6 py-8 font-bold text-brand-dark text-xl">
-      <a *ngFor="let item of menuItems" [routerLink]="item.link" (click)="toggleMenu()"
-        class="hover:text-brand-green transition-colors">
-        {{ item.label }}
-      </a>
     </nav>
   </div>
 </header>
