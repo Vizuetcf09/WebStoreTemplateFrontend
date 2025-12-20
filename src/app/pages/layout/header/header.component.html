@@ -1,8 +1,8 @@
-<header class="flex justify-center lg:p-4 py-2 px-2 z-50">
+<header class="h-fit justify-center lg:p-4 py-2 px-2">
   <!-- Unified Container -->
   <div
-    class="relative bg-brand-green rounded-3xl shadow-lg z-50 transition-all duration-500 ease-in-out overflow-hidden"
-    [ngClass]="isMenuOpen ? 'w-full max-w-lg h-[500px] p-8' : 'w-full max-w-7xl h-auto px-8 py-3'">
+    class="h-fit bg-brand-green shadow-lg z-50 transition-all duration-500 ease-in-out overflow-hidden relative"
+    [ngClass]="isMenuOpen ? 'w-full py-6 px-8 rounded-3xl' : 'h-fit w-full max-w-7xl px-6 py-3 rounded-3xl'">
 
     <!-- Top Row: Logo & Controls -->
     <div class="flex justify-between items-center w-full">
@@ -40,12 +40,14 @@
     </div>
 
     <!-- Mobile Menu Links -->
-    <nav
-      class="md:hidden flex flex-col gap-6 font-bold text-brand-dark text-2xl opacity-0 transition-opacity duration-300 delay-100"
-      [ngClass]="{'opacity-100': isMenuOpen, 'pointer-events-none': !isMenuOpen}">
+    <nav class="flex flex-col gap-6 font-bold text-brand-dark text-2xl text-start transition-all duration-300 overflow-hidden px-4"
+      [ngClass]="{
+        'max-h-0 opacity-0 pointer-events-none': !isMenuOpen,
+        'max-h-96 opacity-100 mt-6': isMenuOpen
+      }">
 
       @for (item of menuItems; track item.link) {
-      <a [routerLink]="item.link" (click)="toggleMenu()" class="hidden hover:opacity-70 transition-opacity">
+      <a [routerLink]="item.link" (click)="toggleMenu()" class="hover:opacity-70 transition-opacity">
         {{ item.label }}
       </a>
       }
