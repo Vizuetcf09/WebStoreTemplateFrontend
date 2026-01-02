@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Hero } from "./components/hero/hero.componet";
-import { WebPageService } from "../../services/webPage.service";
+import { WebPageProductsService } from "../../services/webPageProducts.service";
 import { Products } from './components/products/products.component';
 
 @Component({
@@ -11,5 +11,5 @@ import { Products } from './components/products/products.component';
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
-  productService = inject(WebPageService).productsSignal;
+  productService = inject(WebPageProductsService).productsSignal;
 }

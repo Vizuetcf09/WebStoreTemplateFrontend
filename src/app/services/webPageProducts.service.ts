@@ -3,10 +3,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Product } from '../interfaces/products.interfaces';
 import { environment } from '../../environments/environment';
 import { ProductMapper } from '../mapper/product.mapper';
-import { WebPageResponse } from '../interfaces/webPageApi.interface';
+import { WebPageProductsResponse } from '../interfaces/webPageApi.interface';
 
 @Injectable({ providedIn: 'root' })
-export class WebPageService {
+export class WebPageProductsService {
 
   private http = inject(HttpClient);
 
@@ -19,7 +19,7 @@ export class WebPageService {
 
   loadWebPageProducts() {
     this.http
-      .get<WebPageResponse[]>(`${environment.webPageUrl}`)
+      .get<WebPageProductsResponse[]>(`${environment.webPageProductsUrl}`)
       .subscribe((resp) => {
         const products = ProductMapper.mapProductsItemsToProductArray(resp);
         this.productsSignal.set(products);

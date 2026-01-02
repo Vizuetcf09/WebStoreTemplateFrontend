@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, computed, inject } from "@angular/core";
-import { WebPageService } from "../../services/webPage.service";
+import { WebPageProductsService } from "../../services/webPageProducts.service";
 import { Header } from "../layout/header/header.component";
 
 @Component({
@@ -10,7 +10,7 @@ import { Header } from "../layout/header/header.component";
   templateUrl: './store.component.html',
 })
 export class StoreComponent {
-  private products = inject(WebPageService).productsSignal;
+  private products = inject(WebPageProductsService).productsSignal;
 
   // Static fallback so the cart looks complete even if the API has not loaded yet
   private readonly defaultProduct = {
