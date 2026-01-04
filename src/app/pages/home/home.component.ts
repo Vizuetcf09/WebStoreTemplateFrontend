@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Hero } from "./components/hero/hero.componet";
 import { WebPageProductsService } from "../../services/webPageProducts.service";
 import { ProductsComponent } from './components/products/products.component';
-import { ProductInterface } from '../../interfaces/products.interfaces';
+import { ProductInterface } from '../../interfaces/products/products.interfaces';
 
 @Component({
   selector: 'app-home',

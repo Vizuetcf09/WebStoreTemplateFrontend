@@ -1,29 +1,45 @@
-// import { HttpClient } from '@angular/common/http';
-// import { inject, Injectable, signal } from '@angular/core';
-// import { Product } from '../interfaces/products.interfaces';
-// import { environment } from '../../environments/environment';
-// import { PayPalMapper } from '../mapper/product.mapper';
-// import { WebPagePayPalResponse } from '../interfaces/webPageApi.interface';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { ProductInterface } from '../interfaces/products/products.interfaces';
+import { WebPagePaypalRequestInterface } from '../interfaces/paypal/webPagePaypalRequest.interface';
+import { lastValueFrom } from 'rxjs';
 
-// @Injectable({ providedIn: 'root' })
-// export class WebPagePayPalService {
+@Injectable({ providedIn: 'root' })
+export class WebPagePayPalService {
 
-//   private http = inject(HttpClient);
+  private http = inject(HttpClient);
+  private paypalApiUrl = environment.webPagePayPalUrl;
 
-//   paypalSignal = signal<Product[]>([]);
-//   loadingPayPalSignal = signal(true);
+  payingPaypalSignal = signal<boolean>(false);
+  loadingPayingPayPalSignal = signal(true);
 
-//   constructor() {
-//     this.loadWebPagePayPalProducts()
-//   }
+  // se usa "async/await" (y no ".suscribe") en la función "checkoutWithPaypal()" ya que el canal entre la api y el froinden se debe s¿cerrar despues de recibir los datos enviados por la api.
+  async checkoutWithPaypal(product: ProductInterface) {
+    if (this.payingPaypalSignal()) return; // 
 
-//   loadWebPagePayPalProducts() {
-//     this.http.post<WebPagePayPalResponse[]>(`${environment.webPagePayPalUrl}`)
-//       .subscribe((resp) => {
-//         const products = PayPalMapper.mapProductsItemsToProductArray(resp);
-//         this.paypalSignal.set(products);
-//         this.loadingPayPalSignal.set(false);
-//       });
-//   }
+    this.loadingPayingPayPalSignal.set(true)
 
-// }
+    try {
+      const body = {
+        productID: product.id,
+        productName: product.name,
+        price: product.price
+      }
+
+      // "lastValueFrom" convierte las peticiones de angular (observable: canal abierto con ".suscribe") en promesa
+      const response = await lastValueFrom(
+        this.http
+          .post<WebPagePaypalRequestInterface>(`${this.paypalApiUrl}/pay`, body)
+      );
+
+      if (response?.url) {
+        window.location.href = response.url;
+      }
+    } catch (error) {
+      console.error(`Checkout error: ${error}`);
+      this.payingPaypalSignal.set(false)
+    }
+  };
+
+}

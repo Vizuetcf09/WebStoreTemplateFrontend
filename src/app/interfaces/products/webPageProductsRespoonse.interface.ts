@@ -8,5 +8,5 @@ export interface WebPageProductsResponseInterface {
     imageUrl: string;
     createdAt: Date;
     updatedAt: Date;
-    __v: number;
-}
+    __v: number
+} 

@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { Card } from "../cards/card.component";
-import { ProductInterface } from "../../../../interfaces/products.interfaces";
+import { ProductInterface } from "../../../../interfaces/products/products.interfaces";
 
 @Component({
   selector: 'Products-component',
