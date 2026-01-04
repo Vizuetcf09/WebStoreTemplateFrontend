@@ -1,4 +1,4 @@
-export interface WebPageProductsResponse {
+export interface WebPageProductsResponseInterface {
     _id: string;
     name: string;
     description: string;

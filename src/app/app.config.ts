@@ -4,7 +4,6 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { IMAGE_CONFIG } from '@angular/common';
-import { disableDebugTools } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [

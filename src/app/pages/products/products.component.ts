@@ -1,16 +1,16 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
-import { WebPageService } from "../../services/webPageProducts.service";
+import { WebPageProductsService } from "../../services/webPageProducts.service";
 import { Header } from "../layout/header/header.component";
-import { Products } from "../home/components/products/products.component";
+import { ProductsComponent } from "../home/components/products/products.component";
 
 @Component({
   selector: 'app-products-layout',
   standalone: true,
-  imports: [CommonModule, Header, Products],
+  imports: [CommonModule, Header, ProductsComponent],
   templateUrl: './products.component.html',
 })
 
-export class ProductsComponent {
-  productService = inject(WebPageService).productsSignal;
+export class ProductsLayoutComponent {
+  productService = inject(WebPageProductsService).productsSignal;
 }

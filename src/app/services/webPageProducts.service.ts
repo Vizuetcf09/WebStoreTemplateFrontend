@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Product } from '../interfaces/products.interfaces';
+import { ProductInterface } from '../interfaces/products.interfaces';
 import { environment } from '../../environments/environment';
 import { ProductMapper } from '../mapper/product.mapper';
-import { WebPageProductsResponse } from '../interfaces/webPageApi.interface';
+import { WebPageProductsResponseInterface } from '../interfaces/webPageApi.interface';
 
 @Injectable({ providedIn: 'root' })
 export class WebPageProductsService {
 
   private http = inject(HttpClient);
 
-  productsSignal = signal<Product[]>([]);
+  productsSignal = signal<ProductInterface[]>([]);
   loadingProductSignal = signal(true);
 
   constructor() {
@@ -19,7 +19,7 @@ export class WebPageProductsService {
 
   loadWebPageProducts() {
     this.http
-      .get<WebPageProductsResponse[]>(`${environment.webPageProductsUrl}`)
+      .get<WebPageProductsResponseInterface[]>(`${environment.webPageProductsUrl}`)
       .subscribe((resp) => {
         const products = ProductMapper.mapProductsItemsToProductArray(resp);
         this.productsSignal.set(products);
