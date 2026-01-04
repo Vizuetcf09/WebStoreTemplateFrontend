@@ -5,7 +5,7 @@ export class ProductMapper {
 
   static mapProductsItemsToProduct(item: WebPageProductsResponseInterface): ProductInterface {
     return {
-      _id: item._id,
+      id: item._id,
       name: item.name,
       description: item.description,
       price: item.price,
