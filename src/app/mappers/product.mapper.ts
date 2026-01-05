@@ -1,4 +1,4 @@
-import { WebPageProductsResponseInterface } from "../interfaces/paypal/webPagePaypalRequest.interface";
+import { WebPageProductsResponseInterface } from "../interfaces/products/webPageProductsRespoonse.interface";
 import { ProductInterface } from "../interfaces/products/products.interfaces";
 
 export class ProductMapper {

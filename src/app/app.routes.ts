@@ -11,7 +11,15 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'products', component: ProductsLayoutComponent },
-      { path: 'store', component: StoreComponent }
+      { path: 'store', component: StoreComponent },
+      {
+        path: 'checkout/success',
+        loadComponent: () => import('./pages/store/checkout/Success.component').then(m => m.SuccessComponent)
+      },
+      {
+        path: 'checkout/cancel',
+        loadComponent: () => import('./pages/store/checkout/Cancel.component').then(m => m.CancelComponent)
+      }
     ]
   },
   { path: '**', redirectTo: '' }

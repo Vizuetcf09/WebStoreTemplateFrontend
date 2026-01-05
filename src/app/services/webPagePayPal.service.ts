@@ -9,16 +9,15 @@ import { lastValueFrom } from 'rxjs';
 export class WebPagePayPalService {
 
   private http = inject(HttpClient);
-  private paypalApiUrl = environment.webPagePayPalUrl;
+  private paypalApiUrl = environment.webPagePayPalLocalUrl;
 
-  payingPaypalSignal = signal<boolean>(false);
-  loadingPayingPayPalSignal = signal(true);
+  loadingPayingPaypalSignal = signal(false);
 
   // se usa "async/await" (y no ".suscribe") en la función "checkoutWithPaypal()" ya que el canal entre la api y el froinden se debe s¿cerrar despues de recibir los datos enviados por la api.
   async checkoutWithPaypal(product: ProductInterface) {
-    if (this.payingPaypalSignal()) return; // 
+    if (this.loadingPayingPaypalSignal()) return; // 
 
-    this.loadingPayingPayPalSignal.set(true)
+    this.loadingPayingPaypalSignal.set(true)
 
     try {
       const body = {
@@ -30,15 +29,15 @@ export class WebPagePayPalService {
       // "lastValueFrom" convierte las peticiones de angular (observable: canal abierto con ".suscribe") en promesa
       const response = await lastValueFrom(
         this.http
-          .post<WebPagePaypalRequestInterface>(`${this.paypalApiUrl}/pay`, body)
+          .post<WebPagePaypalRequestInterface>(`${this.paypalApiUrl}/create-order`, body)
       );
 
-      if (response?.url) {
-        window.location.href = response.url;
+      if (response?.success && response.data?.approveLink) {
+        window.location.href = response.data.approveLink;
       }
     } catch (error) {
       console.error(`Checkout error: ${error}`);
-      this.payingPaypalSignal.set(false)
+      this.loadingPayingPaypalSignal.set(false)
     }
   };
 

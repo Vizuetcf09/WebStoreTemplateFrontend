@@ -1,3 +1,7 @@
 export interface WebPagePaypalRequestInterface {
-  url: string
+  success: boolean;
+  data: {
+    orderID: string;
+    approveLink: string;
+  }
 }
