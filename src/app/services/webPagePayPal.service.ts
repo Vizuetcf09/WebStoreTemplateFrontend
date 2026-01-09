@@ -9,7 +9,7 @@ import { lastValueFrom } from 'rxjs';
 export class WebPagePayPalService {
 
   private http = inject(HttpClient);
-  private paypalApiUrl = environment.webPagePayPalLocalUrl;
+  private paypalApiUrl = environment.webPagePayPalUrl;
 
   loadingPayingPaypalSignal = signal(false);
 
