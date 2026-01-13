@@ -8,7 +8,7 @@ export class ProductMapper {
       id: item._id,
       name: item.name,
       description: item.description,
-      price: item.price,
+      price: item.price, // TODO : cambiar a string en db
       category: item.category,
       stock: item.stock,
       imageUrl: item.imageUrl,

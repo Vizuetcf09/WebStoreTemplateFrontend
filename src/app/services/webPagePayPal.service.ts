@@ -21,9 +21,8 @@ export class WebPagePayPalService {
 
     try {
       const body = {
-        productID: product.id,
         productName: product.name,
-        price: product.price
+        productPrice: product.price
       }
 
       // "lastValueFrom" convierte las peticiones de angular (observable: canal abierto con ".suscribe") en promesa
@@ -35,6 +34,7 @@ export class WebPagePayPalService {
       if (response?.success && response.data?.approveLink) {
         window.location.href = response.data.approveLink;
       }
+      // console.log(response.data)
     } catch (error) {
       console.error(`Checkout error: ${error}`);
       this.loadingPayingPaypalSignal.set(false)
