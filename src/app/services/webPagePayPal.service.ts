@@ -21,7 +21,6 @@ export class WebPagePayPalService {
 
     try {
       const body = {
-        productId: product.id,
         productName: product.name,
         productPrice: product.price
       }
