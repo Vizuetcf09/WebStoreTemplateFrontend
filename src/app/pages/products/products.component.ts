@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import { WebPageProductsService } from "../../services/webPageProducts.service";
 import { Header } from "../layout/header/header.component";
 import { ProductsComponent } from "../home/components/products/products.component";
@@ -12,5 +12,6 @@ import { ProductsComponent } from "../home/components/products/products.componen
 })
 
 export class ProductsLayoutComponent {
+  id = input.required<string>();
   productService = inject(WebPageProductsService).productsSignal;
 }

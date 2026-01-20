@@ -1,23 +1,23 @@
-<section
-  class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 w-full max-w-sm mx-auto">
+<section [routerLink]="['/product', product().id]"
+  class=" cursor-pointer bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 w-full max-w-sm mx-auto">
 
   <!-- Product Image -->
   <div class="flex justify-center mb-8 h-48">
-    <img [src]="product.imageUrl" [alt]="product.name" class="h-full object-contain">
+    <img [src]="product().imageUrl" [alt]="product().name" class="h-full object-contain">
   </div>
 
   <!-- Product Info -->
   <header class="text-center mb-4">
-    <h2 class="text-xl font-bold text-gray-900 mb-1">{{ product.name }}</h2>
+    <h2 class="text-xl font-bold text-gray-900 mb-1">{{ product().name }}</h2>
   </header>
 
   <!-- Bottom Row: Description & Price -->
 
   <body class="flex items-end justify-between mt-auto">
-    <p class="text-sm text-gray-500 max-w-[60%] text-left leading-tight">{{ product.description }}</p>
+    <p class="text-sm text-gray-500 max-w-[60%] text-left leading-tight">{{ product().description }}</p>
 
     <a class="bg-purple-100 text-purple-900 font-bold py-1 px-3 rounded-xl text-sm">
-      {{ product.price | currency }}
+      {{ product().price | currency }}
     </a>
   </body>
 </section>
