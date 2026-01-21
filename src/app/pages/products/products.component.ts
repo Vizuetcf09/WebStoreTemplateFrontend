@@ -12,6 +12,5 @@ import { ProductsComponent } from "../home/components/products/products.componen
 })
 
 export class ProductsLayoutComponent {
-  id = input.required<string>();
   productService = inject(WebPageProductsService).productsSignal;
 }

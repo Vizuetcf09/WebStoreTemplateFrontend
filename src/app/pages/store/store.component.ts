@@ -5,7 +5,7 @@ import { Header } from "../layout/header/header.component";
 import { ProductStoreComponet } from "./components/Products.component";
 
 @Component({
-  selector: 'app-cart-page',
+  selector: 'app-store-page',
   standalone: true,
   imports: [CommonModule, Header, ProductStoreComponet],
   templateUrl: './store.component.html',

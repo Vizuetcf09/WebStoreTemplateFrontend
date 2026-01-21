@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { StoreLayoutComponent } from './pages/layout/store-layout/store-layout.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProductsLayoutComponent } from './pages/products/products.component';
-import StoreComponent from './pages/store/store.component';
 
 export const routes: Routes = [
   {
@@ -17,11 +16,11 @@ export const routes: Routes = [
       },
       {
         path: 'checkout/success',
-        loadComponent: () => import('./pages/store/checkout/Success.component').then(m => m.SuccessComponent)
+        loadComponent: () => import('./pages/layout/checkout/Success.component').then(m => m.SuccessComponent)
       },
       {
         path: 'checkout/cancel',
-        loadComponent: () => import('./pages/store/checkout/Cancel.component').then(m => m.CancelComponent)
+        loadComponent: () => import('./pages/layout/checkout/Cancel.component').then(m => m.CancelComponent)
       }
     ]
   },
