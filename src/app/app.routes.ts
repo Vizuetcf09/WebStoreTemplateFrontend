@@ -16,11 +16,11 @@ export const routes: Routes = [
       },
       {
         path: 'checkout/success',
-        loadComponent: () => import('./pages/layout/checkout/Success.component').then(m => m.SuccessComponent)
+        loadComponent: () => import('./pages/layout/checkout/Success.component')
       },
       {
         path: 'checkout/cancel',
-        loadComponent: () => import('./pages/layout/checkout/Cancel.component').then(m => m.CancelComponent)
+        loadComponent: () => import('./pages/layout/checkout/Cancel.component')
       }
     ]
   },

@@ -38,7 +38,7 @@ import { Header } from '../header/header.component';
   `
 })
 
-export class SuccessComponent implements OnInit {
+export default class SuccessComponent implements OnInit {
   private route = inject(ActivatedRoute);
   orderId: string | null = '';
 

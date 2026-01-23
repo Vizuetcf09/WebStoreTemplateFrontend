@@ -35,4 +35,4 @@ import { Header } from '../header/header.component';
     </div>
   `
 })
-export class CancelComponent { }
+export default class CancelComponent { }
