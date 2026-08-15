@@ -36,7 +36,7 @@ export class WebPagePayPalService {
       }
       // console.log(response.data)
     } catch (error) {
-      console.error(`Checkout error: ${error}`);
+      console.error('Checkout error:', error);      
       this.loadingPayingPaypalSignal.set(false)
     }
   };
