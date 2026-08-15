@@ -1,0 +1,21 @@
+<section
+  class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 w-full max-w-sm mx-auto">
+  <!-- Product Image -->
+  <div class="flex justify-center mb-8 h-48">
+    <img [src]="product().thumbnailUrl" [alt]="product().name" class="h-full object-contain">
+  </div>
+  <!-- Product Info -->
+  <header class="text-center mb-4">
+    <h2 class="text-xl font-bold text-gray-900 mb-1">{{ product().name }}</h2>
+  </header>
+  <!-- Bottom Row: Variants count -->
+
+  <body class="flex items-end justify-between mt-auto">
+    <p class="text-sm text-gray-500 text-left leading-tight">
+      {{ product().variantsCount }} variante(s)
+    </p>
+    <a class="bg-purple-100 text-purple-900 font-bold py-1 px-3 rounded-xl text-sm">
+      {{ product().syncedCount }} sincronizadas
+    </a>
+  </body>
+</section>
