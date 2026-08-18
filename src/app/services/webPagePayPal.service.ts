@@ -15,30 +15,29 @@ export class WebPagePayPalService {
 
   // se usa "async/await" (y no ".suscribe") en la función "checkoutWithPaypal()" ya que el canal entre la api y el froinden se debe s¿cerrar despues de recibir los datos enviados por la api.
   async checkoutWithPaypal(product: ProductInterface) {
-    if (this.loadingPayingPaypalSignal()) return; // 
+    if (!product || this.loadingPayingPaypalSignal()) return;
 
-    this.loadingPayingPaypalSignal.set(true)
+    this.loadingPayingPaypalSignal.set(true);
 
     try {
       const body = {
         productName: product.name,
         productPrice: product.price
-      }
+      };
 
-      // "lastValueFrom" convierte las peticiones de angular (observable: canal abierto con ".suscribe") en promesa
       const response = await lastValueFrom(
-        this.http
-          .post<WebPagePaypalRequestInterface>(`${this.paypalApiUrl}/create-order`, body)
+        this.http.post<WebPagePaypalRequestInterface>(`${this.paypalApiUrl}/create-order`, body)
       );
 
       if (response?.success && response.data?.approveLink) {
         window.location.href = response.data.approveLink;
+      } else {
+        console.error('La respuesta de PayPal no contiene el enlace de aprobación:', response);
+        this.loadingPayingPaypalSignal.set(false);
       }
-      // console.log(response.data)
     } catch (error) {
-      console.error('Checkout error:', error);      
-      this.loadingPayingPaypalSignal.set(false)
+      console.error('Error durante la creación de orden en PayPal:', error);
+      this.loadingPayingPaypalSignal.set(false);
     }
-  };
-
+  }
 }

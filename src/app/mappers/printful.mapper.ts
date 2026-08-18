@@ -15,6 +15,7 @@ export class PrintfulMapper {
   }
 
   static mapPrintfulItemsToProductArray(items: WebPagePrintfulResponseInterface[]): PrintfulProductInterface[] {
-    return items.map(this.mapPrintfulItemToProduct);
+    if (!Array.isArray(items)) return [];
+    return items.map(item => this.mapPrintfulItemToProduct(item));
   }
 }

@@ -19,16 +19,20 @@ export class WebPageProductsService {
   }
 
   loadWebPageProducts() {
+    this.loadingProductSignal.set(true);
     this.http
       .get<WebPageProductsResponseInterface[]>(`${this.webPageProductsUrl}`)
       .subscribe({
         next: (resp) => {
-          const products = ProductMapper.mapProductsItemsToProductArray(resp);
+          const products = Array.isArray(resp)
+            ? ProductMapper.mapProductsItemsToProductArray(resp)
+            : [];
           this.productsSignal.set(products);
           this.loadingProductSignal.set(false);
         },
         error: (err) => {
           console.error('Error cargando productos de Web Page:', err);
+          this.productsSignal.set([]);
           this.loadingProductSignal.set(false);
         }
       });

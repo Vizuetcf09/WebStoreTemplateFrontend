@@ -18,18 +18,22 @@ export class WebPagePrintfulService {
   }
 
   loadWebPagePrintfulProducts() {
+    this.loadingPrintfulProductsSignal.set(true);
     this.http
       .get<WebPagePrintfulApiWrapper>(`${this.webPagePrintfulUrl}/products`)
       .subscribe({
         next: (resp) => {
-          const products = PrintfulMapper.mapPrintfulItemsToProductArray(resp.data);
+          const products = resp?.data
+            ? PrintfulMapper.mapPrintfulItemsToProductArray(resp.data)
+            : [];
           this.printfulProductsSignal.set(products);
           this.loadingPrintfulProductsSignal.set(false);
         },
         error: (err) => {
-          console.error('Error loading Printful products:', err);
+          console.error('Error cargando productos de Printful:', err);
+          this.printfulProductsSignal.set([]);
           this.loadingPrintfulProductsSignal.set(false);
         }
       });
-  } // TODO: manejo de errores más robusto, igual que en WebPageProductsService
+  }
 }

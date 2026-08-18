@@ -8,17 +8,17 @@ export class ProductMapper {
       id: item._id,
       name: item.name,
       description: item.description,
-      price: item.price, // TODO : cambiar a string en db
+      price: item.price,
       category: item.category,
       stock: item.stock,
       imageUrl: item.imageUrl,
-      createdAt: new Date(item.createdAt),
-      updatedAt: new Date(item.updatedAt)
+      createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+      updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date()
     };
   }
 
   static mapProductsItemsToProductArray(items: WebPageProductsResponseInterface[]): ProductInterface[] {
-    return items.map(this.mapProductsItemsToProduct);
+    if (!Array.isArray(items)) return [];
+    return items.map(item => this.mapProductsItemsToProduct(item));
   }
-
 }

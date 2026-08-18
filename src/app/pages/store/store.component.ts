@@ -15,11 +15,16 @@ export default class StoreComponent {
 
   private webPageService = inject(WebPageProductsService);
 
-  productService = this.webPageService.productsSignal();
+  get productService() {
+    const allProducts = this.webPageService.productsSignal();
+    const currentId = this.id();
+    const found = allProducts.find(product => product.id === currentId);
+    return found ? [found] : [];
+  }
 
   product = computed(() => {
-    const allProducts = this.productService;
-    const curretId = this.id();
-    return allProducts.find(product => product.id === curretId);
-  })
+    const allProducts = this.webPageService.productsSignal();
+    const currentId = this.id();
+    return allProducts.find(product => product.id === currentId);
+  });
 }
