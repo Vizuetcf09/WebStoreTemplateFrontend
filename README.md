@@ -1,75 +1,91 @@
-# WebStore
+# 💻 WebStore Frontend (Angular)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.1.
+Aplicación web frontend moderna para la plataforma **Web Store**, desarrollada con **Angular 21 (Standalone Components)**, **Tailwind CSS**, **RxJS** y **Vitest**.
 
-## Development server
+---
 
-To start a local development server, run:
+## 📌 Características Principales
+
+- ⚡ **Angular 21 Standalone Components:** Componentes modulares, livianos y desacoplados sin necesidad de `NgModule`.
+- 🎨 **Diseño Moderno con Tailwind CSS:** Interfaz limpia, responsiva, adaptada a dispositivos móviles y escritorios.
+- 🛍 **Catálogo Dinámico de Productos:** Visualización de tarjetas de producto con precios, tallas, imágenes y navegación detallada.
+- 💳 **Integración de Checkout con PayPal:** Experiencia fluida para redirigir y manejar respuestas de pago exitosas (`/checkout/success`) o canceladas (`/checkout/cancel`).
+- 👕 **Integración con Productos de Printful:** Consumo de servicios REST backend para mostrar productos sincronizados y calcular opciones de compra.
+- 🧪 **Testing con Vitest:** Pruebas unitarias ultrarrápidas configuradas mediante `@analogjs/vite-plugin-angular`.
+
+---
+
+## 📂 Estructura de la Aplicación (`/src/app`)
 
 ```bash
+src/app/
+├── interfaces/            # Modelos e interfaces de TypeScript (Product, Cart, Order)
+├── mappers/               # Mapeadores y transformadores de datos API a vista
+├── pages/
+│   ├── components/        # Componentes UI reutilizables (Header, Footer, Product Cards)
+│   ├── home/              # Página de inicio / Hero section
+│   ├── layout/            # Layout principal (StoreLayout) y vistas de Checkout (Success, Cancel)
+│   ├── printful/          # Vistas de productos de Printful
+│   ├── products/          # Catálogo general de productos
+│   └── store/             # Vista detallada de producto individual (`product/:id`)
+├── services/              # Servicios HTTP inyectables (Products, PayPal, Printful)
+├── app.component.ts       # Componente raíz
+├── app.config.ts          # Configuración global de Angular (ProvideRouter, ProvideHttpClient)
+└── app.routes.ts          # Rutas principales y lazy loading de componentes
+```
+
+---
+
+## 🚀 Comandos de Desarrollo
+
+### Iniciar Servidor Local de Desarrollo
+```bash
+pnpm start
+# o
 ng serve
 ```
+Navega a `http://localhost:4200/` en tu navegador. La aplicación se recargará automáticamente al guardar cambios.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Compilar para Producción
 ```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+pnpm build
+# o
 ng build
 ```
+Los archivos optimizados se generarán en la carpeta `dist/frontend`.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+### Ejecutar Pruebas Unitarias (Vitest)
 ```bash
-ng test
+pnpm test
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🗺 Enrutamiento (`app.routes.ts`)
 
-```bash
-ng e2e
-```
+| Ruta | Componente | Descripción |
+|------|------------|-------------|
+| `/` | `HomeComponent` | Página principal de bienvenida con banners y productos destacados |
+| `/products` | `ProductsLayoutComponent` | Listado general y filtrable del catálogo |
+| `/product/:id` | `StoreComponent` (Lazy) | Detalle de producto, selección de talla/color y botón de compra |
+| `/checkout/success` | `SuccessComponent` (Lazy) | Confirmación de pago exitoso de PayPal |
+| `/checkout/cancel` | `CancelComponent` (Lazy) | Notificación de cancelación de pago |
+| `**` | Redirección a `/` | Comportamiento fallback para rutas desconocidas |
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## ⚙️ Integración con Backend API
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Los servicios en `src/app/services/` se comunican con los endpoints del backend:
+- `webPageProducts.service.ts` ➔ `/api/products`
+- `webPagePayPal.service.ts` ➔ `/api/paypal/create-order`
+- `webPagePrintful.service.ts` ➔ `/api/printful/products`
 
+---
 
-# Design
+## 🎨 Referencias de Diseño e Inspiración
 
-1. [Mobbin](https://merch.mobbin.com/)
-2. [FAINE - Clothing Store](https://www.behance.net/gallery/236634801/FAINE-clothing-store?tracking_source=search_projects|web+store&l=7)
-3. [MOTH - Brnd Store](https://www.behance.net/gallery/236483277/MOTH-Brand-Store?tracking_source=search_projects|web+store&l=11)
-4. [Klane](https://klane.framer.website/)
-5. [Optix](https://optixel.framer.website/)
-6. [Art & Ojects](https://artandobjects.framer.website/)
-7. [GARM](https://garm.framer.website/)
-8. [BLUR](https://blurr.framer.website/)
-
-## Platforms
-
-- [CLONIFY](https://library.clonify.io/)
+- [Mobbin Merch](https://merch.mobbin.com/)
+- [FAINE Clothing Store](https://www.behance.net/gallery/236634801/FAINE-clothing-store)
+- [MOTH Brand Store](https://www.behance.net/gallery/236483277/MOTH-Brand-Store)
+- [Klane Framer Template](https://klane.framer.website/)

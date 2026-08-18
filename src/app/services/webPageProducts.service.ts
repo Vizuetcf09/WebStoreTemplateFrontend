@@ -18,15 +18,20 @@ export class WebPageProductsService {
     this.loadWebPageProducts()
   }
 
-  // se usa ".suscribe" en la función "loadWebPageProducts()", ya que el canal entre la api y el backend debe estar abierto a posibles cambios
   loadWebPageProducts() {
     this.http
       .get<WebPageProductsResponseInterface[]>(`${this.webPageProductsUrl}`)
-      .subscribe((resp) => {
-        const products = ProductMapper.mapProductsItemsToProductArray(resp);
-        this.productsSignal.set(products);
-        this.loadingProductSignal.set(false);
+      .subscribe({
+        next: (resp) => {
+          const products = ProductMapper.mapProductsItemsToProductArray(resp);
+          this.productsSignal.set(products);
+          this.loadingProductSignal.set(false);
+        },
+        error: (err) => {
+          console.error('Error cargando productos de Web Page:', err);
+          this.loadingProductSignal.set(false);
+        }
       });
-  } // TODO: mannejo de errores
-
+  }
 }
+
