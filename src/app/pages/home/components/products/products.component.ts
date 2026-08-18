@@ -11,4 +11,5 @@ import { Card } from "../../../components/cards/card.component";
 })
 export class ProductsComponent {
   @Input() products: ProductInterface[] = [];
+  @Input() cardLink?: string | any[];
 }

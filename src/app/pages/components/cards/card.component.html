@@ -1,23 +1,22 @@
-<section [routerLink]="['/product', product().id]"
-  class=" cursor-pointer bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 w-full max-w-sm mx-auto">
+<section [routerLink]="link() ? link() : ['/product', product().id]"
+  class="group cursor-pointer bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 ease-out w-full max-w-sm mx-auto flex flex-col h-full justify-between">
 
   <!-- Product Image -->
-  <div class="flex justify-center mb-8 h-48">
-    <img [src]="product().imageUrl" [alt]="product().name" class="h-full object-contain">
+  <div class="flex justify-center mb-8 h-48 shrink-0 overflow-hidden">
+    <img [src]="product().imageUrl" [alt]="product().name" class="h-full object-contain group-hover:scale-105 transition-transform duration-300 ease-out">
   </div>
 
   <!-- Product Info -->
-  <header class="text-center mb-4">
-    <h2 class="text-xl font-bold text-gray-900 mb-1">{{ product().name }}</h2>
+  <header class="text-center mb-4 flex-grow flex flex-col justify-center">
+    <h2 class="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors duration-300 mb-1">{{ product().name }}</h2>
   </header>
 
   <!-- Bottom Row: Description & Price -->
+  <div class="flex items-end justify-between mt-auto pt-2">
+    <p class="text-sm text-gray-500 max-w-[60%] text-left leading-tight line-clamp-3">{{ product().description }}</p>
 
-  <body class="flex items-end justify-between mt-auto">
-    <p class="text-sm text-gray-500 max-w-[60%] text-left leading-tight">{{ product().description }}</p>
-
-    <a class="bg-purple-100 text-purple-900 font-bold py-1 px-3 rounded-xl text-sm">
+    <a class="bg-purple-100 text-purple-900 group-hover:bg-purple-600 group-hover:text-white font-bold py-1 px-3 rounded-xl text-sm transition-colors duration-300">
       {{ product().price | currency }}
     </a>
-  </body>
+  </div>
 </section>

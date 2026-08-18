@@ -7,6 +7,9 @@ import { PrintfulProductInterface } from "../../../interfaces/printful/printful.
     standalone: true,
     imports: [CommonModule],
     templateUrl: './printful-card.component.html',
+    host: {
+        class: 'h-full flex flex-col'
+    }
 })
 export class PrintfulCard {
     product = input.required<PrintfulProductInterface>();
