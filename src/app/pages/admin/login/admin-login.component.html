@@ -1,0 +1,63 @@
+<section class="min-h-screen bg-brand-gray/70 flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+  <div class="absolute -top-24 -right-20 w-72 h-72 rounded-full bg-brand-purple/15 blur-3xl"></div>
+  <div class="absolute -bottom-28 -left-20 w-80 h-80 rounded-full bg-brand-green/30 blur-3xl"></div>
+  <div
+    class="relative w-full max-w-md bg-white/95 backdrop-blur rounded-[1.75rem] p-6 sm:p-8 shadow-[0_24px_70px_rgba(32,36,44,0.14)] ring-1 ring-black/5 flex flex-col gap-5">
+    <div>
+      <p class="text-sm font-bold text-brand-purple uppercase tracking-[0.22em]">Web Store</p>
+      <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Tu cuenta</h1>
+      <p class="text-sm text-black/60 mt-2">Accede a tu cuenta o crea una nueva.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 bg-brand-gray/80 rounded-2xl p-1">
+      <button type="button" class="rounded-xl py-3 font-bold text-sm" [class.bg-white]="mode === 'login'"
+        (click)="mode = 'login'">Login</button>
+      <button type="button" class="rounded-xl py-3 font-bold text-sm" [class.bg-white]="mode === 'register'"
+        (click)="mode = 'register'">Registro</button>
+    </div>
+
+    @if (mode === 'login') {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
+      <label class="flex flex-col gap-2 font-semibold">
+        Correo
+        <input type="email" formControlName="email" class="rounded-2xl border border-black/10 px-4 py-3 font-normal"
+          placeholder="tu@email.com" />
+      </label>
+      <label class="flex flex-col gap-2 font-semibold">
+        Contraseña
+        <input type="password" formControlName="password"
+          class="rounded-2xl border border-black/10 px-4 py-3 font-normal" placeholder="••••••••" />
+      </label>
+      <button type="submit"
+        class="rounded-2xl bg-brand-dark text-white font-bold py-3 shadow-lg shadow-brand-dark/15 hover:-translate-y-0.5 disabled:opacity-60"
+        [disabled]="loading">
+        {{ loading ? 'Ingresando...' : 'Entrar' }}
+      </button>
+    </form>
+    } @else {
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col gap-5">
+      <label class="flex flex-col gap-2 font-semibold">
+        Nombre
+        <input formControlName="name" class="rounded-2xl border border-black/10 px-4 py-3 font-normal"
+          placeholder="Tu nombre" />
+      </label>
+      <label class="flex flex-col gap-2 font-semibold">
+        Correo
+        <input type="email" formControlName="email" class="rounded-2xl border border-black/10 px-4 py-3 font-normal"
+          placeholder="tu@email.com" />
+      </label>
+      <label class="flex flex-col gap-2 font-semibold">
+        Contraseña
+        <input type="password" formControlName="password"
+          class="rounded-2xl border border-black/10 px-4 py-3 font-normal" placeholder="Mínimo 4 caracteres" />
+      </label>
+      <button type="submit"
+        class="rounded-2xl bg-brand-dark text-white font-bold py-3 shadow-lg shadow-brand-dark/15 hover:-translate-y-0.5 disabled:opacity-60"
+        [disabled]="loading">
+        {{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}
+      </button>
+    </form>
+    }
+
+  </div>
+</section>

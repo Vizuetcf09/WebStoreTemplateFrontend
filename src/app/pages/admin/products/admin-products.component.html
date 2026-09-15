@@ -1,0 +1,185 @@
+<section class="flex flex-col gap-6">
+  <header class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-widest text-brand-purple">Inventario</p>
+      <h2 class="text-3xl font-black">Productos locales</h2>
+      <p class="text-black/60">Catálogo interno con búsqueda, paginación y operaciones CRUD.</p>
+    </div>
+    <div class="flex gap-3">
+      <button type="button" class="rounded-2xl px-4 py-3 bg-white font-bold" (click)="viewMode.set(viewMode() === 'table' ? 'grid' : 'table')">
+        Vista {{ viewMode() === 'table' ? 'grid' : 'tabla' }}
+      </button>
+      <button type="button" class="rounded-2xl px-4 py-3 bg-brand-dark text-white font-bold" (click)="openCreate()">
+        Nuevo producto
+      </button>
+    </div>
+  </header>
+
+  <form class="bg-white rounded-3xl p-4 grid md:grid-cols-4 gap-3" (ngSubmit)="applyFilters()">
+    <input
+      class="rounded-2xl border border-black/10 px-4 py-3"
+      placeholder="Buscar por nombre o categoría"
+      name="search"
+      [(ngModel)]="search"
+      [ngModelOptions]="{standalone: true}"
+    />
+    <select class="rounded-2xl border border-black/10 px-4 py-3" [(ngModel)]="category" [ngModelOptions]="{standalone: true}">
+      <option value="">Todas las categorías</option>
+      @for (item of categories(); track item) {
+        <option [value]="item">{{ item }}</option>
+      }
+    </select>
+    <select class="rounded-2xl border border-black/10 px-4 py-3" [(ngModel)]="status" [ngModelOptions]="{standalone: true}">
+      <option value="all">Todos los estados</option>
+      <option value="active">Activos</option>
+      <option value="inactive">Inactivos</option>
+      <option value="deleted">Eliminados</option>
+    </select>
+    <button type="submit" class="rounded-2xl bg-brand-green font-bold">Filtrar</button>
+  </form>
+
+  @if (loading()) {
+    <div class="bg-white rounded-3xl p-10 text-center font-bold">Cargando catálogo...</div>
+  } @else if (!products().length) {
+    <div class="bg-white rounded-3xl p-10 text-center">No hay productos con esos filtros.</div>
+  } @else if (viewMode() === 'table') {
+    <div class="bg-white rounded-3xl overflow-x-auto">
+      <table class="w-full text-left min-w-[720px]">
+        <thead class="border-b border-black/10">
+          <tr class="text-sm uppercase tracking-wide">
+            <th class="p-4">Portada</th>
+            <th class="p-4">Nombre</th>
+            <th class="p-4">Precio</th>
+            <th class="p-4">Stock</th>
+            <th class="p-4">Estado / Categoría</th>
+            <th class="p-4">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr class="border-b border-black/5">
+              <td class="p-4">
+                <img [src]="product.imageUrl" [alt]="product.name" class="w-16 h-16 object-cover rounded-2xl bg-brand-gray" />
+              </td>
+              <td class="p-4 font-bold">
+                {{ product.name }}
+                @if (product.printfulId) {
+                  <span class="block text-xs font-semibold text-brand-purple">Printful #{{ product.printfulId }}</span>
+                }
+              </td>
+              <td class="p-4">${{ product.price | number:'1.2-2' }}</td>
+              <td class="p-4">{{ product.stock }}</td>
+              <td class="p-4">
+                <span class="font-bold">{{ statusLabel(product.status) }}</span>
+                <span class="block text-sm text-black/60">{{ product.category }}</span>
+              </td>
+              <td class="p-4">
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" class="rounded-xl px-3 py-2 bg-brand-gray font-bold" (click)="openEdit(product)">Editar</button>
+                  <button type="button" class="rounded-xl px-3 py-2 bg-brand-green font-bold" (click)="toggleStatus(product)">
+                    {{ product.status === 'active' ? 'Desactivar' : 'Activar' }}
+                  </button>
+                  <button type="button" class="rounded-xl px-3 py-2 bg-red-500 text-white font-bold" (click)="confirmDelete(product)">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      @for (product of products(); track product.id) {
+        <article class="bg-white rounded-3xl p-4 flex flex-col gap-3">
+          <img [src]="product.imageUrl" [alt]="product.name" class="h-40 w-full object-cover rounded-2xl bg-brand-gray" />
+          <h3 class="font-black">{{ product.name }}</h3>
+          <p class="text-sm text-black/60">{{ product.category }} · {{ statusLabel(product.status) }}</p>
+          <p class="font-bold">${{ product.price | number:'1.2-2' }} · Stock {{ product.stock }}</p>
+          <div class="flex gap-2 mt-auto">
+            <button type="button" class="flex-1 rounded-xl px-3 py-2 bg-brand-gray font-bold" (click)="openEdit(product)">Editar</button>
+            <button type="button" class="rounded-xl px-3 py-2 bg-red-500 text-white font-bold" (click)="confirmDelete(product)">Eliminar</button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+
+  <footer class="flex items-center justify-between bg-white rounded-3xl px-4 py-3 font-bold">
+    <span>{{ total }} productos · Página {{ page }} de {{ pages }}</span>
+    <div class="flex gap-2">
+      <button type="button" class="rounded-xl px-3 py-2 bg-brand-gray" (click)="changePage(-1)" [disabled]="page === 1">Anterior</button>
+      <button type="button" class="rounded-xl px-3 py-2 bg-brand-gray" (click)="changePage(1)" [disabled]="page >= pages">Siguiente</button>
+    </div>
+  </footer>
+</section>
+
+@if (showForm) {
+  <div class="fixed inset-0 bg-black/40 z-50 flex items-start md:items-center justify-center p-4 overflow-y-auto">
+    <form class="bg-white rounded-3xl w-full max-w-2xl p-6 flex flex-col gap-4" [formGroup]="form" (ngSubmit)="saveProduct()">
+      <h3 class="text-2xl font-black">{{ editingId ? 'Editar producto' : 'Nuevo producto' }}</h3>
+
+      <label class="font-semibold flex flex-col gap-1">
+        Título *
+        <input class="rounded-2xl border border-black/10 px-4 py-3 font-normal" formControlName="name" />
+      </label>
+      <label class="font-semibold flex flex-col gap-1">
+        Descripción *
+        <textarea class="rounded-2xl border border-black/10 px-4 py-3 font-normal min-h-28" formControlName="description"></textarea>
+      </label>
+      <div class="grid md:grid-cols-2 gap-4">
+        <label class="font-semibold flex flex-col gap-1">
+          Precio de venta *
+          <input type="number" min="0" step="0.01" class="rounded-2xl border border-black/10 px-4 py-3 font-normal" formControlName="price" />
+        </label>
+        <label class="font-semibold flex flex-col gap-1">
+          Precio de coste
+          <input type="number" min="0" step="0.01" class="rounded-2xl border border-black/10 px-4 py-3 font-normal" formControlName="costPrice" />
+        </label>
+        <label class="font-semibold flex flex-col gap-1">
+          Categoría *
+          <input class="rounded-2xl border border-black/10 px-4 py-3 font-normal" formControlName="category" />
+        </label>
+        <label class="font-semibold flex flex-col gap-1">
+          Stock *
+          <input type="number" min="0" class="rounded-2xl border border-black/10 px-4 py-3 font-normal" formControlName="stock" />
+        </label>
+      </div>
+      <label class="font-semibold flex flex-col gap-1">
+        Imagen de portada (URL) *
+        <input class="rounded-2xl border border-black/10 px-4 py-3 font-normal" formControlName="imageUrl" />
+      </label>
+      <label class="font-semibold flex flex-col gap-1">
+        Imágenes extra (una URL por línea)
+        <textarea class="rounded-2xl border border-black/10 px-4 py-3 font-normal min-h-24" formControlName="images"></textarea>
+      </label>
+      <label class="font-semibold flex flex-col gap-1">
+        Estado
+        <select class="rounded-2xl border border-black/10 px-4 py-3 font-normal" formControlName="status">
+          <option value="active">Activo</option>
+          <option value="inactive">Inactivo</option>
+        </select>
+      </label>
+
+      <div class="flex justify-end gap-3">
+        <button type="button" class="rounded-2xl px-4 py-3 bg-brand-gray font-bold" (click)="closeForm()">Cancelar</button>
+        <button type="submit" class="rounded-2xl px-4 py-3 bg-brand-dark text-white font-bold" [disabled]="saving()">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+}
+
+@if (productToDelete) {
+  <div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 flex flex-col gap-4">
+      <h3 class="text-2xl font-black">Confirmar eliminación</h3>
+      <p>¿Quieres desactivar <strong>{{ productToDelete.name }}</strong>? Esta acción evita borrados accidentales y se puede revertir activando el producto.</p>
+      <div class="flex flex-wrap justify-end gap-3">
+        <button type="button" class="rounded-2xl px-4 py-3 bg-brand-gray font-bold" (click)="productToDelete = null">Cancelar</button>
+        <button type="button" class="rounded-2xl px-4 py-3 bg-brand-dark text-white font-bold" (click)="deleteProduct(false)">Desactivar</button>
+        <button type="button" class="rounded-2xl px-4 py-3 bg-red-500 text-white font-bold" (click)="deleteProduct(true)">Eliminar permanente</button>
+      </div>
+    </div>
+  </div>
+}

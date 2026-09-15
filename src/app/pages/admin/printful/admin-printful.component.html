@@ -1,0 +1,137 @@
+<section class="flex flex-col gap-6">
+  <header class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-widest text-brand-purple">Integración</p>
+      <h2 class="text-3xl font-black">Productos de Printful</h2>
+      <p class="text-black/60">Consulta el catálogo de la tienda Printful e impórtalo al inventario local sin duplicados.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <button type="button" class="rounded-2xl px-4 py-3 bg-white font-bold" (click)="refresh()" [disabled]="loading()">
+        Actualizar
+      </button>
+      <button type="button" class="rounded-2xl px-4 py-3 bg-brand-green font-bold" (click)="importSelected()" [disabled]="syncing()">
+        Importar seleccionados
+      </button>
+      <button type="button" class="rounded-2xl px-4 py-3 bg-brand-dark text-white font-bold" (click)="syncAll()" [disabled]="syncing()">
+        {{ syncing() ? 'Sincronizando...' : 'Sincronizar catálogo' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="grid md:grid-cols-3 gap-4">
+    <article class="bg-white rounded-3xl p-5">
+      <p class="text-sm text-black/60">Token Printful</p>
+      <p class="text-xl font-black">{{ configured() ? 'Configurado' : 'Falta PRINTFUL_API_KEY' }}</p>
+    </article>
+    <article class="bg-white rounded-3xl p-5">
+      <p class="text-sm text-black/60">Store ID</p>
+      <p class="text-xl font-black">{{ storeIdConfigured() ? 'Configurado' : 'Opcional / no definido' }}</p>
+    </article>
+    <article class="bg-white rounded-3xl p-5">
+      <p class="text-sm text-black/60">Seleccionados</p>
+      <p class="text-xl font-black">{{ selectedIds().size }}</p>
+    </article>
+  </div>
+
+  <div class="bg-white rounded-3xl p-4 grid md:grid-cols-2 gap-3">
+    <label class="font-semibold flex flex-col gap-1">
+      Categoría al importar
+      <input class="rounded-2xl border border-black/10 px-4 py-3 font-normal" [(ngModel)]="category" />
+    </label>
+    <label class="font-semibold flex flex-col gap-1">
+      Markup % si Printful no trae precio de venta
+      <input type="number" min="0" class="rounded-2xl border border-black/10 px-4 py-3 font-normal" [(ngModel)]="markupPercent" />
+    </label>
+  </div>
+
+  @if (loading()) {
+    <div class="bg-white rounded-3xl p-10 text-center font-bold">Consultando Printful...</div>
+  } @else if (error()) {
+    <div class="bg-red-50 text-red-700 rounded-3xl p-10 font-bold">{{ error() }}</div>
+  } @else if (!products().length) {
+    <div class="bg-white rounded-3xl p-10 text-center">No hay productos en la cuenta de Printful.</div>
+  } @else {
+    <div class="bg-white rounded-3xl overflow-x-auto">
+      <table class="w-full text-left min-w-[860px]">
+        <thead class="border-b border-black/10">
+          <tr class="text-sm uppercase tracking-wide">
+            <th class="p-4">
+              <input type="checkbox" (change)="toggleAll()" [checked]="selectedIds().size === products().length && products().length > 0" />
+            </th>
+            <th class="p-4">Mockup</th>
+            <th class="p-4">Producto</th>
+            <th class="p-4">Variantes</th>
+            <th class="p-4">Coste / Venta local</th>
+            <th class="p-4">Estado</th>
+            <th class="p-4">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr class="border-b border-black/5 align-top">
+              <td class="p-4">
+                <input type="checkbox" [checked]="isSelected(product.id)" (change)="toggleSelected(product.id)" />
+              </td>
+              <td class="p-4">
+                <img [src]="product.thumbnailUrl" [alt]="product.name" class="w-16 h-16 object-cover rounded-2xl bg-brand-gray" />
+              </td>
+              <td class="p-4 font-bold">
+                {{ product.name }}
+                <span class="block text-xs text-black/50 font-semibold">ID {{ product.id }}</span>
+              </td>
+              <td class="p-4">{{ product.syncedCount }}/{{ product.variantsCount }}</td>
+              <td class="p-4">
+                @if (product.localCostPrice != null || product.localPrice != null) {
+                  <span class="block text-sm">Coste ${{ (product.localCostPrice || 0) | number:'1.2-2' }}</span>
+                  <span class="block text-sm font-bold">Venta ${{ (product.localPrice || 0) | number:'1.2-2' }}</span>
+                } @else {
+                  <span class="text-sm text-black/50">Sin persistir</span>
+                }
+              </td>
+              <td class="p-4 font-bold">{{ statusLabel(product.syncStatus) }}</td>
+              <td class="p-4">
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" class="rounded-xl px-3 py-2 bg-brand-gray font-bold" (click)="toggleDetails(product)">
+                    {{ expandedId() === product.id ? 'Ocultar' : 'Variantes' }}
+                  </button>
+                  <button type="button" class="rounded-xl px-3 py-2 bg-brand-dark text-white font-bold" (click)="importOne(product)" [disabled]="syncing()">
+                    Importar
+                  </button>
+                </div>
+              </td>
+            </tr>
+            @if (expandedId() === product.id) {
+              <tr class="bg-brand-gray/60">
+                <td colspan="7" class="p-4">
+                  @if (detailLoading()) {
+                    <p class="font-bold">Cargando variantes y mockups...</p>
+                  } @else if (detail()) {
+                    @if (detail(); as current) {
+                      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+                        @for (variant of current.mapped?.variants || current.sync_variants || []; track variant.variantId || variant.id) {
+                          <article class="bg-white rounded-2xl p-3 flex gap-3">
+                            <img
+                              [src]="variant.previewUrl || variant.product?.image || product.thumbnailUrl"
+                              alt=""
+                              class="w-16 h-16 object-cover rounded-xl"
+                            />
+                            <div>
+                              <p class="font-bold">{{ variant.name }}</p>
+                              <p class="text-sm">{{ variant.color }} {{ variant.size }}</p>
+                              <p class="text-sm">Coste ${{ (variant.costPrice || 0) | number:'1.2-2' }}</p>
+                              <p class="text-sm font-bold">Venta ${{ (variant.price || variant.retail_price || 0) | number:'1.2-2' }}</p>
+                            </div>
+                          </article>
+                        }
+                      </div>
+                    }
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

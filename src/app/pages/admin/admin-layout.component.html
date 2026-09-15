@@ -1,0 +1,30 @@
+<div class="min-h-screen bg-brand-gray/70 text-brand-dark">
+  <aside
+    class="md:fixed md:inset-y-0 md:left-0 md:w-64 bg-brand-dark text-white p-5 sm:p-6 flex flex-col gap-8 shadow-2xl shadow-brand-dark/15">
+    <div>
+      <p class="text-xs uppercase tracking-[0.2em] text-brand-green">Panel</p>
+      <h1 class="text-2xl font-black tracking-tight">Administración</h1>
+      <p class="text-sm text-white/70 mt-1">{{ auth.userName() || 'Administrador' }}</p>
+    </div>
+
+    <nav class="flex md:flex-col gap-3 overflow-x-auto">
+      @for (item of navItems; track item.link) {
+      <a [routerLink]="item.link" routerLinkActive="bg-brand-green text-brand-dark"
+        class="rounded-xl px-4 py-3 font-bold hover:bg-white/10 transition-colors whitespace-nowrap">
+        {{ item.label }}
+      </a>
+      }
+    </nav>
+
+    <div class="mt-auto flex md:flex-col gap-3">
+      <a routerLink="/" class="rounded-xl px-4 py-3 font-bold bg-white/10 hover:bg-white/20">Ver tienda</a>
+      <button type="button" (click)="auth.logout()" class="rounded-xl px-4 py-3 font-bold bg-red-500 hover:bg-red-600">
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <main class="md:ml-64 p-4 sm:p-6 md:p-8">
+    <router-outlet />
+  </main>
+</div>
