@@ -3,5 +3,6 @@ export const environment = {
     companyName: 'WebPage',
     webPageProductsUrl: 'https://webpageapibackend.vercel.app/api/products',
     webPagePayPalUrl: 'https://webpageapibackend.vercel.app/api/paypal',
-    webPagePrintfulUrl: 'https://webpageapibackend.vercel.app/api/printful', 
-}
+    webPagePrintfulUrl: 'https://webpageapibackend.vercel.app/api/printful',
+    webPageUserUrl: 'https://webpageapibackend.vercel.app/api/user',
+};

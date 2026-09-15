@@ -9,9 +9,15 @@ export class ProductMapper {
       name: item.name,
       description: item.description,
       price: item.price,
+      costPrice: item.costPrice ?? 0,
       category: item.category,
       stock: item.stock,
       imageUrl: item.imageUrl,
+      images: item.images?.length ? item.images : item.imageUrl ? [item.imageUrl] : [],
+      status: item.status ?? 'active',
+      source: item.source ?? (item.printfulId ? 'printful' : 'local'),
+      printfulId: item.printfulId,
+      variants: item.variants ?? [],
       createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
       updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date()
     };

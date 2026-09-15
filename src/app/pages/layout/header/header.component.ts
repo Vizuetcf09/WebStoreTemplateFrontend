@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'Header',
@@ -9,6 +11,8 @@ import { RouterModule } from '@angular/router';
   templateUrl: './header.component.html',
 })
 export class Header {
+  auth = inject(AuthService);
+  private toast = inject(ToastService);
   isMenuOpen = false;
 
   menuItems = [
@@ -18,5 +22,11 @@ export class Header {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  logout() {
+    this.auth.logout();
+    this.isMenuOpen = false;
+    this.toast.success('Sesión cerrada');
   }
 }

@@ -1,4 +1,5 @@
-// Forma limpia que usa el resto de la app (post-mapeo)
+export type PrintfulSyncStatus = 'synced' | 'not_synced' | 'local-deleted';
+
 export interface PrintfulProductInterface {
     id: number;
     externalId: string;
@@ -7,4 +8,20 @@ export interface PrintfulProductInterface {
     syncedCount: number;
     thumbnailUrl: string;
     isIgnored: boolean;
+    syncStatus?: PrintfulSyncStatus;
+    localProductId?: string | null;
+    localPrice?: number | null;
+    localCostPrice?: number | null;
+}
+
+export interface PrintfulVariantInterface {
+    id: number;
+    name: string;
+    retailPrice: number;
+    costPrice?: number;
+    salePrice?: number;
+    color?: string;
+    size?: string;
+    previewUrl?: string;
+    isIgnored?: boolean;
 }

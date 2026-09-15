@@ -3,6 +3,6 @@ export const environment = {
     companyName: 'WebPage',
     webPageProductsUrl: 'http://localhost:9600/api/products',
     webPagePayPalUrl: 'http://localhost:9600/api/paypal',
-    webPagePrintfulUrl: 'http://localhost:9600/api/printful'
-
-}
+    webPagePrintfulUrl: 'http://localhost:9600/api/printful',
+    webPageUserUrl: 'http://localhost:9600/api/user',
+};

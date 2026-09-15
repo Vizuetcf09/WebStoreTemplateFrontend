@@ -10,7 +10,11 @@ export class PrintfulMapper {
       variantsCount: item.variants,
       syncedCount: item.synced,
       thumbnailUrl: item.thumbnail_url,
-      isIgnored: item.is_ignored
+      isIgnored: item.is_ignored,
+      syncStatus: item.syncStatus ?? 'not_synced',
+      localProductId: item.localProductId ?? null,
+      localPrice: item.localPrice ?? null,
+      localCostPrice: item.localCostPrice ?? null
     };
   }
 
