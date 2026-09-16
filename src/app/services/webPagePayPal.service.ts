@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ProductInterface } from '../interfaces/products/products.interfaces';
+import { CartItem } from './cart.service';
 import { WebPagePaypalRequestInterface } from '../interfaces/paypal/webPagePaypalRequest.interface';
 import { lastValueFrom } from 'rxjs';
 
@@ -15,16 +16,30 @@ export class WebPagePayPalService {
 
   // se usa "async/await" (y no ".suscribe") en la función "checkoutWithPaypal()" ya que el canal entre la api y el froinden se debe s¿cerrar despues de recibir los datos enviados por la api.
   async checkoutWithPaypal(product: ProductInterface) {
-    if (!product || this.loadingPayingPaypalSignal()) return;
+    if (!product) return;
+
+    return this.checkout({
+      productName: product.name,
+      productPrice: product.price
+    });
+  }
+
+  async checkoutCart(items: CartItem[], total: number) {
+    if (!items.length) return;
+
+    const productName = items.length === 1
+      ? items[0].product.name
+      : `Carrito (${items.length} artículos)`;
+
+    return this.checkout({ productName, productPrice: total });
+  }
+
+  private async checkout(body: { productName: string; productPrice: number }) {
+    if (this.loadingPayingPaypalSignal()) return;
 
     this.loadingPayingPaypalSignal.set(true);
 
     try {
-      const body = {
-        productName: product.name,
-        productPrice: product.price
-      };
-
       const response = await lastValueFrom(
         this.http.post<WebPagePaypalRequestInterface>(`${this.paypalApiUrl}/create-order`, body)
       );

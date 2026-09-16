@@ -30,6 +30,19 @@
         <a routerLink="/auth"
           class="rounded-xl bg-brand-dark text-white px-4 py-2 hover:opacity-80 transition-opacity">Login</a>
         }
+        <a routerLink="/carrito" aria-label="Abrir carrito" title="Abrir carrito"
+          class="relative flex items-center gap-2 rounded-xl bg-white/50 px-4 py-2 hover:bg-white/80 transition-colors">
+          <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 8H6" />
+            <circle cx="10" cy="20" r="1" />
+            <circle cx="18" cy="20" r="1" />
+          </svg>
+          <span>Carrito</span>
+          @if (cart.totalItems() > 0) {
+          <span class="rounded-full bg-brand-purple px-2 py-0.5 text-sm text-white">{{ cart.totalItems() }}</span>
+          }
+        </a>
 
       </nav>
 
@@ -73,6 +86,18 @@
       <a routerLink="/auth" (click)="toggleMenu()"
         class="rounded-xl bg-brand-dark text-white px-4 py-3 hover:opacity-80 transition-opacity">Login</a>
       }
+      <a routerLink="/carrito" (click)="toggleMenu()" aria-label="Abrir carrito" title="Abrir carrito"
+        class="flex items-center gap-3 rounded-xl bg-white/50 px-4 py-3 hover:bg-white/80 transition-colors">
+        <svg aria-hidden="true" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 8H6" />
+          <circle cx="10" cy="20" r="1" />
+          <circle cx="18" cy="20" r="1" />
+        </svg>
+        <span>Carrito</span>
+        @if (cart.totalItems() > 0) {
+        <span class="rounded-full bg-brand-purple px-2 py-0.5 text-base text-white">{{ cart.totalItems() }}</span>
+        }
+      </a>
 
     </nav>
   </div>

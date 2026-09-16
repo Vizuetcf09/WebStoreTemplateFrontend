@@ -1,4 +1,60 @@
 <section class="bg-brand-white min-h-screen flex flex-col">
   <Header></Header>
-  <Products-store [products]="productService"></Products-store>
+  @if (product(); as currentProduct) {
+  <main class="max-w-6xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-12 gap-6 scroll-mt-6">
+    <aside class="md:col-span-2 order-2 md:order-1 space-y-3">
+      <p class="text-xs uppercase tracking-widest text-gray-500">Variaciones</p>
+      @for (variant of variants(); track variant.variantId) {
+      <button type="button" (click)="selectVariant(variant.variantId)"
+        class="w-full text-left rounded-xl border p-3 transition-colors"
+        [class.border-brand-purple]="selectedVariantId() === variant.variantId"
+        [class.bg-brand-lilac]="selectedVariantId() === variant.variantId">
+        <span class="block font-semibold">{{ variant.color || variant.name || 'Variante' }}</span>
+        <span class="text-sm text-gray-500">{{ variant.size || 'Disponible' }}</span>
+      </button>
+      } @empty {
+      <p class="text-sm text-gray-500">Sin variaciones</p>
+      }
+    </aside>
+
+    <section class="md:col-span-6 order-1 md:order-2">
+      <div class="group overflow-hidden rounded-3xl bg-white shadow-sm aspect-square">
+        <img [src]="activeImage()" [alt]="currentProduct.name"
+          class="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-150">
+      </div>
+      <div class="mt-4 flex gap-3 overflow-x-auto">
+        @for (image of currentProduct.images || [currentProduct.imageUrl]; track image) {
+        <img [src]="image" [alt]="currentProduct.name" class="h-16 w-16 rounded-lg object-cover ring-1 ring-black/10">
+        }
+      </div>
+    </section>
+
+    <section class="md:col-span-4 order-3 space-y-5">
+      <p class="text-sm uppercase tracking-widest text-brand-purple">{{ currentProduct.category }}</p>
+      <h1 class="text-4xl font-black text-brand-dark">{{ currentProduct.name }}</h1>
+      <p class="text-3xl font-black text-brand-dark">{{ activePrice() | currency }}</p>
+      <p class="leading-relaxed text-gray-600">{{ currentProduct.description }}</p>
+      <div class="flex items-center gap-3">
+        <button type="button" (click)="decreaseQuantity()" class="h-10 w-10 rounded-lg bg-brand-gray text-xl">-</button>
+        <span class="min-w-8 text-center font-bold">{{ quantity() }}</span>
+        <button type="button" (click)="increaseQuantity()" class="h-10 w-10 rounded-lg bg-brand-gray text-xl">+</button>
+        <span class="text-sm text-gray-500">{{ currentProduct.stock }} disponibles</span>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <button type="button" (click)="addToCart()"
+          class="rounded-xl bg-brand-green px-5 py-3 font-bold text-brand-dark">Agregar al carrito</button>
+        <button type="button" (click)="addToCart(true)"
+          class="rounded-xl bg-brand-dark px-5 py-3 font-bold text-white">Ir a pagar</button>
+      </div>
+      <div class="flex justify-between border-t pt-5">
+        <button type="button" [disabled]="!previousProduct()" (click)="navigateToProduct(previousProduct()?.id)"
+          class="text-sm font-bold disabled:opacity-30">Anterior</button>
+        <button type="button" [disabled]="!nextProduct()" (click)="navigateToProduct(nextProduct()?.id)"
+          class="text-sm font-bold disabled:opacity-30">Siguiente</button>
+      </div>
+    </section>
+  </main>
+  } @else {
+  <div class="flex min-h-64 items-center justify-center text-gray-500">Buscando producto...</div>
+  }
 </section>

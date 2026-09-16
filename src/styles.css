@@ -119,6 +119,22 @@ textarea:focus {
   animation: fadeIn 0.45s ease-out forwards;
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.45s ease-in forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
 
   *,

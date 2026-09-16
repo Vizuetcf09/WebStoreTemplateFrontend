@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ToastService } from '../../../services/toast.service';
+import { CartService } from '../../../services/cart.service';
 
 @Component({
   selector: 'Header',
@@ -12,6 +13,7 @@ import { ToastService } from '../../../services/toast.service';
 })
 export class Header {
   auth = inject(AuthService);
+  cart = inject(CartService);
   private toast = inject(ToastService);
   isMenuOpen = false;
 

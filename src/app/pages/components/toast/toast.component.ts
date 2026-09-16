@@ -7,10 +7,12 @@ import { ToastService } from '../../../services/toast.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="fixed top-4 right-4 z-[80] flex flex-col gap-3 w-[min(92vw,360px)]">
+    <div class="fixed bottom-4 right-4 z-[80] flex w-[min(92vw,360px)] flex-col gap-3 sm:bottom-6 sm:right-6">
       @for (toast of toastService.messages(); track toast.id) {
         <div
-          class="rounded-2xl px-4 py-3 shadow-lg text-sm font-semibold animate-fade-in"
+          class="rounded-2xl px-4 py-3 shadow-lg text-sm font-semibold"
+          [class.animate-fade-in]="!toast.exiting"
+          [class.animate-fade-out]="toast.exiting"
           [ngClass]="{
             'bg-brand-green text-brand-dark': toast.type === 'success',
             'bg-red-500 text-white': toast.type === 'error',

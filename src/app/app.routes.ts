@@ -12,8 +12,16 @@ export const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'products', component: ProductsLayoutComponent },
       {
+        path: 'products/:id',
+        loadComponent: () => import('./pages/store/store.component')
+      },
+      {
         path: 'product/:id',
         loadComponent: () => import('./pages/store/store.component')
+      },
+      {
+        path: 'carrito',
+        loadComponent: () => import('./pages/layout/cart/cart.component').then(m => m.CartComponent)
       },
       {
         path: 'checkout/success',
