@@ -19,10 +19,19 @@ export default class StoreComponent {
   private router = inject(Router);
   private cart = inject(CartService);
   private toast = inject(ToastService);
+  private initializedProductId: string | null = null;
 
   constructor() {
     effect(() => {
-      if (this.product()) {
+      const currentProduct = this.product();
+      if (currentProduct && currentProduct.id !== this.initializedProductId) {
+        this.initializedProductId = currentProduct.id;
+        const firstVariant = currentProduct.variants?.[0];
+        if (firstVariant) {
+          this.selectColor(firstVariant.color || 'Único');
+        }
+      }
+      if (currentProduct) {
         queueMicrotask(() => window.scrollTo({ top: 0, behavior: 'auto' }));
       }
     });
@@ -34,12 +43,25 @@ export default class StoreComponent {
     return allProducts.find(product => product.id === currentId);
   });
 
-  selectedVariantId = signal<number | null>(null);
+  selectedColor = signal<string | null>(null);
+  selectedSize = signal<string | null>(null);
   quantity = signal(1);
 
   variants = computed(() => this.product()?.variants ?? []);
+  colorOptions = computed(() => Array.from(new Set(
+    this.variants().map(variant => variant.color || 'Único')
+  )));
+  sizeOptions = computed(() => {
+    return Array.from(new Set(
+      this.variants()
+        .map(variant => variant.size || 'Única')
+    ));
+  });
   selectedVariant = computed(() =>
-    this.variants().find(variant => variant.variantId === this.selectedVariantId())
+    this.variants().find(variant =>
+      (variant.color || 'Único') === this.selectedColor() &&
+      (variant.size || 'Única') === this.selectedSize()
+    )
   );
   activeImage = computed(() => this.selectedVariant()?.previewUrl || this.product()?.imageUrl || '');
   activePrice = computed(() => this.selectedVariant()?.price ?? this.product()?.price ?? 0);
@@ -54,9 +76,21 @@ export default class StoreComponent {
     return index >= 0 ? products[index + 1] : undefined;
   });
 
-  selectVariant(variantId: number) {
-    this.selectedVariantId.set(variantId);
+  selectColor(color: string) {
+    this.selectedColor.set(color);
     this.quantity.set(1);
+  }
+
+  selectSize(size: string) {
+    this.selectedSize.set(size);
+    this.quantity.set(1);
+  }
+
+  isSizeAvailable(size: string) {
+    return this.variants().some(variant =>
+      (variant.color || 'Único') === this.selectedColor() &&
+      (variant.size || 'Única') === size
+    );
   }
 
   increaseQuantity() {

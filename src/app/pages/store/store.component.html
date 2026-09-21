@@ -2,19 +2,39 @@
   <Header></Header>
   @if (product(); as currentProduct) {
   <main class="max-w-6xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-12 gap-6 scroll-mt-6">
-    <aside class="md:col-span-2 order-2 md:order-1 space-y-3">
-      <p class="text-xs uppercase tracking-widest text-gray-500">Variaciones</p>
-      @for (variant of variants(); track variant.variantId) {
-      <button type="button" (click)="selectVariant(variant.variantId)"
-        class="w-full text-left rounded-xl border p-3 transition-colors"
-        [class.border-brand-purple]="selectedVariantId() === variant.variantId"
-        [class.bg-brand-lilac]="selectedVariantId() === variant.variantId">
-        <span class="block font-semibold">{{ variant.color || variant.name || 'Variante' }}</span>
-        <span class="text-sm text-gray-500">{{ variant.size || 'Disponible' }}</span>
-      </button>
-      } @empty {
-      <p class="text-sm text-gray-500">Sin variaciones</p>
-      }
+    <aside class="md:col-span-2 order-2 md:order-1 flex flex-col gap-4 md:h-full">
+      <div>
+        <p class="mb-2 text-xs uppercase tracking-widest text-gray-500">Color</p>
+        <div class="grid grid-cols-2 gap-2" [class.grid-cols-3]="colorOptions().length > 6"
+          [class.grid-cols-2]="colorOptions().length <= 6">
+          @for (color of colorOptions(); track color) {
+          <button type="button" (click)="selectColor(color)"
+            class="min-w-0 rounded-lg border p-2 text-left text-xs font-semibold transition-colors"
+            [class.border-brand-purple]="selectedColor() === color" [class.bg-brand-lilac]="selectedColor() === color">
+            <span class="block truncate">{{ color }}</span>
+          </button>
+          } @empty {
+          <p class="col-span-full text-sm text-gray-500">Sin colores</p>
+          }
+        </div>
+      </div>
+
+      <div>
+        <p class="mb-2 text-xs uppercase tracking-widest text-gray-500">Talla</p>
+        <div class="grid grid-cols-2 gap-2" [class.grid-cols-3]="sizeOptions().length > 6"
+          [class.grid-cols-2]="sizeOptions().length <= 6">
+          @for (size of sizeOptions(); track size) {
+          <button type="button" (click)="selectSize(size)" [disabled]="!isSizeAvailable(size)"
+            class="min-w-0 rounded-lg border p-2 text-center text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+            [class.line-through]="!isSizeAvailable(size)" [class.border-brand-purple]="selectedSize() === size"
+            [class.bg-brand-lilac]="selectedSize() === size">
+            {{ size }}
+          </button>
+          } @empty {
+          <p class="col-span-full text-sm text-gray-500">Selecciona un color</p>
+          }
+        </div>
+      </div>
     </aside>
 
     <section class="md:col-span-6 order-1 md:order-2">
