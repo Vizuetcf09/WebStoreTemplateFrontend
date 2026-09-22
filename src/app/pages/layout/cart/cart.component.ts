@@ -1,16 +1,16 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CartService } from '../../../services/cart.service';
+import { CartItem, CartService } from '../../../services/cart.service';
 import { WebPagePayPalService } from '../../../services/webPagePayPal.service';
 import { ToastService } from '../../../services/toast.service';
 import { Header } from '../header/header.component';
 
 @Component({
-    selector: 'app-cart',
-    standalone: true,
-    imports: [CommonModule, CurrencyPipe, RouterLink, Header],
-    template: `
+  selector: 'app-cart',
+  standalone: true,
+  imports: [CommonModule, CurrencyPipe, RouterLink, Header],
+  template: `
     <Header></Header>
     <main class="mx-auto min-h-screen max-w-4xl p-6">
       <a routerLink="/products" class="text-sm font-bold text-brand-purple">&larr; Seguir comprando</a>
@@ -26,7 +26,7 @@ import { Header } from '../header/header.component';
             <span class="min-w-6 text-center font-bold">{{ item.quantity }}</span>
             <button type="button" [disabled]="item.quantity >= item.product.stock" (click)="cart.increment(item)" class="h-8 w-8 rounded-lg bg-brand-gray font-bold disabled:opacity-30">+</button>
           </div>
-          <button type="button" (click)="cart.remove(item); $event.stopPropagation()" class="text-sm font-bold text-red-600">Eliminar</button>
+          <button type="button" (click)="askToRemove(item); $event.stopPropagation()" class="text-sm font-bold text-red-600">Eliminar</button>
         </div>
       </article>
       } @empty { <p class="mt-8 text-gray-500">Tu carrito está vacío.</p> }
@@ -47,16 +47,26 @@ import { Header } from '../header/header.component';
   `
 })
 export class CartComponent {
-    cart = inject(CartService);
-    paypal = inject(WebPagePayPalService);
-    private toast = inject(ToastService);
+  cart = inject(CartService);
+  paypal = inject(WebPagePayPalService);
+  private toast = inject(ToastService);
 
-    async pay() {
-        if (!this.cart.items().length) return;
-        try {
-            await this.paypal.checkoutCart(this.cart.items(), this.cart.total());
-        } catch {
-            this.toast.error('No se pudo iniciar el pago. Inténtalo de nuevo.');
-        }
+  askToRemove(item: CartItem) {
+    const productLabel = item.quantity > 1 ? 'estos productos' : 'este producto';
+    this.toast.confirm(`¿Deseas eliminar ${productLabel} de tu carrito?`, () => {
+      this.cart.remove(item);
+      this.toast.success(item.quantity > 1
+        ? 'Productos eliminados del carrito.'
+        : 'Producto eliminado del carrito.');
+    });
+  }
+
+  async pay() {
+    if (!this.cart.items().length) return;
+    try {
+      await this.paypal.checkoutCart(this.cart.items(), this.cart.total());
+    } catch {
+      this.toast.error('No se pudo iniciar el pago. Inténtalo de nuevo.');
     }
+  }
 }

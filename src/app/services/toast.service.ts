@@ -6,6 +6,10 @@ export interface ToastMessage {
   id: number;
   type: ToastType;
   text: string;
+  action?: {
+    label: string;
+    callback: () => void;
+  };
   exiting?: boolean;
 }
 
@@ -26,6 +30,22 @@ export class ToastService {
 
   error(text: string) {
     this.show(text, 'error', 5000);
+  }
+
+  confirm(text: string, callback: () => void) {
+    const id = this.nextId++;
+    this.messages.update((current) => [...current, {
+      id,
+      type: 'info',
+      text,
+      action: {
+        label: 'Confirmar',
+        callback: () => {
+          callback();
+          this.dismiss(id);
+        }
+      }
+    }]);
   }
 
   dismiss(id: number) {

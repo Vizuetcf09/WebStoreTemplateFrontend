@@ -38,9 +38,19 @@
     </aside>
 
     <section class="md:col-span-6 order-1 md:order-2">
-      <div class="group overflow-hidden rounded-3xl bg-white shadow-sm aspect-square">
+      <div class="group relative overflow-hidden rounded-3xl bg-white shadow-sm aspect-square"
+        (mousedown)="startZoom($event)" (mouseup)="stopZoom()" (mouseleave)="onImageLeave()"
+        (mouseenter)="showZoomInstruction()" (mousemove)="onMouseMove($event)">
+        @if (showZoomHint() && !zoomed()) {
+        <span
+          class="pointer-events-none fixed z-90 rounded-lg bg-brand-dark px-3 py-2 text-xs font-bold text-white shadow-lg"
+          [style.left.px]="cursorX()" [style.top.px]="cursorY()">
+          Haz zoom con clic izquierdo
+        </span>
+        }
         <img [src]="activeImage()" [alt]="currentProduct.name"
-          class="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-150">
+          class="h-full w-full object-contain transition-transform duration-500 ease-out"
+          [style.transform]="zoomed() ? 'scale(2)' : 'scale(1)'" [style.transform-origin]="zoomOrigin()">
       </div>
       <div class="mt-4 flex gap-3 overflow-x-auto">
         @for (image of currentProduct.images || [currentProduct.imageUrl]; track image) {

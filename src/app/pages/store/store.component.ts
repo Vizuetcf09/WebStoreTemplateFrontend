@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, effect, inject, input, signal } from "@angular/core";
+import { Component, computed, effect, HostListener, inject, input, signal } from "@angular/core";
 import { Router } from '@angular/router';
 import { WebPageProductsService } from "../../services/webPageProducts.service";
 import { Header } from "../layout/header/header.component";
@@ -20,6 +20,12 @@ export default class StoreComponent {
   private cart = inject(CartService);
   private toast = inject(ToastService);
   private initializedProductId: string | null = null;
+  zoomed = signal(false);
+  showZoomHint = signal(false);
+  cursorX = signal(0);
+  cursorY = signal(0);
+  zoomOrigin = signal('50% 50%');
+  private zoomHintTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
     effect(() => {
@@ -79,6 +85,57 @@ export default class StoreComponent {
   selectColor(color: string) {
     this.selectedColor.set(color);
     this.quantity.set(1);
+  }
+
+  startZoom(event: MouseEvent) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    this.zoomed.set(true);
+    this.showZoomHint.set(false);
+    this.updateZoom(event);
+  }
+
+  onMouseMove(event: MouseEvent) {
+    this.cursorX.set(event.clientX + 12);
+    this.cursorY.set(event.clientY + 12);
+    if (this.zoomed()) this.updateZoom(event);
+  }
+
+  stopZoom() {
+    this.zoomed.set(false);
+  }
+
+  onImageLeave() {
+    this.clearZoomHintTimer();
+    this.showZoomHint.set(false);
+    this.stopZoom();
+  }
+
+  showZoomInstruction() {
+    this.clearZoomHintTimer();
+    this.showZoomHint.set(true);
+    this.zoomHintTimer = setTimeout(() => {
+      this.showZoomHint.set(false);
+    }, 2000);
+  }
+
+  private clearZoomHintTimer() {
+    if (!this.zoomHintTimer) return;
+    clearTimeout(this.zoomHintTimer);
+    this.zoomHintTimer = undefined;
+  }
+
+  @HostListener('window:mouseup')
+  onWindowMouseUp() {
+    this.stopZoom();
+  }
+
+  private updateZoom(event: MouseEvent) {
+    const imageArea = event.currentTarget as HTMLElement;
+    const bounds = imageArea.getBoundingClientRect();
+    const x = Math.min(100, Math.max(0, ((event.clientX - bounds.left) / bounds.width) * 100));
+    const y = Math.min(100, Math.max(0, ((event.clientY - bounds.top) / bounds.height) * 100));
+    this.zoomOrigin.set(`${x}% ${y}%`);
   }
 
   selectSize(size: string) {
