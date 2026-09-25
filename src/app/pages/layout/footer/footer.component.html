@@ -1,6 +1,6 @@
 <footer class="bg-brand-white w-full py-4 overflow-hidden relative">
   <div
-    class="site-container bg-brand-purple px-6 sm:px-10 lg:px-16 py-12 sm:py-16 rounded-[1.75rem] flex flex-col items-center justify-center text-center gap-7 relative overflow-hidden">
+    class="site-container bg-brand-purple px-6 sm:px-10 lg:px-16 py-12 sm:py-16 rounded-[1.75rem] flex flex-col items-center justify-center text-center gap-3 relative overflow-hidden">
 
     <!-- Smiley Icon -->
     <!-- <div class="mb-6 transform hover:scale-110 transition-transform duration-300">
@@ -23,9 +23,32 @@
     </h1>
 
     <!-- Navigation Links -->
-    <nav class="flex flex-wrap justify-center gap-x-8 gap-y-3">
-      <a href="/" class="text-white font-medium hover:text-brand-green transition-colors text-lg">Home</a>
-      <a href="/products" class="text-white font-medium hover:text-brand-green transition-colors text-lg">Products</a>
+    <nav aria-label="Navegación del sitio" class="w-full font-sans text-[2rem] font-black pt-12">
+      <ul class="flex flex-wrap justify-end gap-x-6 gap-y-2 text-right">
+        <li>
+          <a routerLink="/" class="text-white hover:text-brand-green transition-colors">
+            INICIO
+          </a>
+        </li>
+        <li>
+          <a routerLink="/products" class="text-white hover:text-brand-green transition-colors">
+            PRODUCTOS
+          </a>
+        </li>
+
+        @if (auth.isAdmin()) {
+        <li>
+          <a routerLink="/admin" class="text-white hover:text-brand-green transition-colors">
+            ADMIN
+          </a>
+        </li>
+        }
+        <li>
+          <a routerLink="/carrito" class="text-white hover:text-brand-green transition-colors">
+            CARRITO
+          </a>
+        </li>
+      </ul>
     </nav>
 
     <p
