@@ -1,5 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { effect, inject, Injectable, computed, signal } from '@angular/core';
 import { ProductInterface, ProductVariantInterface } from '../interfaces/products/products.interfaces';
+import { AuthService } from './auth.service';
 
 export interface CartItem {
     product: ProductInterface;
@@ -10,9 +11,21 @@ export interface CartItem {
 @Injectable({ providedIn: 'root' })
 export class CartService {
     private readonly storageKey = 'web-store-cart';
-    items = signal<CartItem[]>(this.loadItems());
+    private readonly auth = inject(AuthService);
+    private activeUserId = this.auth.userId();
+    items = signal<CartItem[]>(this.loadItems(this.activeUserId));
     totalItems = computed(() => this.items().reduce((total, item) => total + item.quantity, 0));
     total = computed(() => this.items().reduce((sum, item) => sum + (item.variant?.price ?? item.product.price) * item.quantity, 0));
+
+    constructor() {
+        effect(() => {
+            const userId = this.auth.userId();
+            if (userId === this.activeUserId) return;
+
+            this.activeUserId = userId;
+            this.items.set(this.loadItems(userId));
+        });
+    }
 
     addToCart(product: ProductInterface, quantity: number, variant?: ProductVariantInterface) {
         const key = `${product.id}:${variant?.variantId ?? 'default'}`;
@@ -50,6 +63,7 @@ export class CartService {
     }
 
     private updateItems(update: (items: CartItem[]) => CartItem[]) {
+        this.syncUserItems();
         this.items.update(items => {
             const updatedItems = update(items);
             this.saveItems(updatedItems);
@@ -57,11 +71,23 @@ export class CartService {
         });
     }
 
-    private loadItems(): CartItem[] {
+    private syncUserItems() {
+        const userId = this.auth.userId();
+        if (userId === this.activeUserId) return;
+
+        this.activeUserId = userId;
+        this.items.set(this.loadItems(userId));
+    }
+
+    private getStorageKey(userId: string | null) {
+        return userId ? `${this.storageKey}:${userId}` : this.storageKey;
+    }
+
+    private loadItems(userId: string | null): CartItem[] {
         if (typeof localStorage === 'undefined') return [];
 
         try {
-            const storedItems = localStorage.getItem(this.storageKey);
+            const storedItems = localStorage.getItem(this.getStorageKey(userId));
             if (!storedItems) return [];
 
             const parsedItems: unknown = JSON.parse(storedItems);
@@ -75,7 +101,7 @@ export class CartService {
         if (typeof localStorage === 'undefined') return;
 
         try {
-            localStorage.setItem(this.storageKey, JSON.stringify(items));
+            localStorage.setItem(this.getStorageKey(this.activeUserId), JSON.stringify(items));
         } catch {
         }
     }

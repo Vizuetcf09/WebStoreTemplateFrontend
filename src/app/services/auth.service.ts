@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 
 const TOKEN_KEY = 'webstore_admin_token';
 const USER_KEY = 'webstore_admin_user';
+const USER_ID_KEY = 'webstore_user_id';
 const ROLE_KEY = 'webstore_user_role';
 
 export type UserRole = 'user' | 'admin';
@@ -27,6 +28,7 @@ export class AuthService {
 
   token = signal<string | null>(this.readStorage(TOKEN_KEY));
   userName = signal<string | null>(this.readStorage(USER_KEY));
+  userId = signal<string | null>(this.readStorage(USER_ID_KEY));
   role = signal<UserRole>(this.readStorage(ROLE_KEY) === 'admin' ? 'admin' : 'user');
   isAuthenticated = computed(() => Boolean(this.token()));
   isAdmin = computed(() => this.role() === 'admin');
@@ -46,10 +48,12 @@ export class AuthService {
 
     localStorage.setItem(TOKEN_KEY, response.token);
     localStorage.setItem(USER_KEY, response.name);
+    localStorage.setItem(USER_ID_KEY, response.userId);
     const role: UserRole = response.isAdmin || response.role === 'admin' ? 'admin' : 'user';
     localStorage.setItem(ROLE_KEY, role);
     this.token.set(response.token);
     this.userName.set(response.name);
+    this.userId.set(response.userId);
     this.role.set(role);
     return response;
   }
@@ -66,9 +70,11 @@ export class AuthService {
   logout(redirect = true) {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(USER_ID_KEY);
     localStorage.removeItem(ROLE_KEY);
     this.token.set(null);
     this.userName.set(null);
+    this.userId.set(null);
     this.role.set('user');
     if (redirect) this.router.navigate(['/']);
   }
