@@ -19,7 +19,7 @@ import { Header } from '../header/header.component';
         </div>
 
         <h1 class="text-3xl font-black text-brand-ink mb-2">Pago Cancelado</h1>
-        <p class="text-gray-600 mb-8">La transacción ha sido cancelada. No se ha realizado ningún cargo a tu cuenta de PayPal.</p>
+        <p class="text-gray-600 mb-8">La transacción no se completó. No se ha confirmado ningún cargo.</p>
         
         <div class="flex flex-col gap-3">
           <button routerLink="/products" 

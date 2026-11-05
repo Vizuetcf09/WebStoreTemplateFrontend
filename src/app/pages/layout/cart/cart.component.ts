@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartItem, CartService } from '../../../services/cart.service';
 import { WebPagePayPalService } from '../../../services/webPagePayPal.service';
+import { WebPageMercadoPagoService } from '../../../services/webPageMercadoPago.service';
 import { ToastService } from '../../../services/toast.service';
 import { Header } from '../header/header.component';
 
@@ -39,16 +40,23 @@ import { Header } from '../header/header.component';
       </div>
       }
       <div class="mt-8 flex items-center justify-between border-t pt-5"><span class="font-bold">Total</span><strong class="text-2xl">{{ cart.total() | currency }}</strong></div>
-      <button type="button" [disabled]="!cart.items().length || paypal.loadingPayingPaypalSignal()" (click)="pay()"
+      <button type="button" [disabled]="!cart.items().length || paypal.loadingPayingPaypalSignal() || mercadoPago.loadingPayingSignal()" (click)="pay()"
         class="mt-5 w-full rounded-xl bg-brand-purple px-5 py-3 font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">
         {{ paypal.loadingPayingPaypalSignal() ? 'Procesando pago...' : 'Pagar con PayPal' }}
       </button>
+      @if (false) {
+      <button type="button" [disabled]="!cart.items().length || paypal.loadingPayingPaypalSignal() || mercadoPago.loadingPayingSignal()" (click)="payWithMercadoPago()"
+        class="mt-3 w-full rounded-xl bg-brand-green px-5 py-3 font-bold text-brand-dark disabled:cursor-not-allowed disabled:opacity-40">
+        {{ mercadoPago.loadingPayingSignal() ? 'Procesando pago...' : 'Pagar con Mercado Pago' }}
+      </button>
+      }
     </main>
   `
 })
 export class CartComponent {
   cart = inject(CartService);
   paypal = inject(WebPagePayPalService);
+  mercadoPago = inject(WebPageMercadoPagoService);
   private toast = inject(ToastService);
 
   askToRemove(item: CartItem) {
@@ -67,6 +75,15 @@ export class CartComponent {
       await this.paypal.checkoutCart(this.cart.items(), this.cart.total());
     } catch {
       this.toast.error('No se pudo iniciar el pago. Inténtalo de nuevo.');
+    }
+  }
+
+  async payWithMercadoPago() {
+    if (!this.cart.items().length) return;
+    try {
+      await this.mercadoPago.checkoutCart(this.cart.items());
+    } catch {
+      this.toast.error('No se pudo iniciar el pago con Mercado Pago. Inténtalo de nuevo.');
     }
   }
 }
