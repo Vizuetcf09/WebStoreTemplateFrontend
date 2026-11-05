@@ -107,9 +107,9 @@
                     <p class="font-bold">Cargando variantes y mockups...</p>
                   } @else if (detail()) {
                     @if (detail(); as current) {
-                      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+                      <div class="grid md:grid-cols-2 xl:grid-cols-3 justify-items-center gap-3">
                         @for (variant of current.mapped?.variants || current.sync_variants || []; track variant.variantId || variant.id) {
-                          <article class="bg-white rounded-2xl p-3 flex gap-3">
+                          <article class="bg-white rounded-2xl p-3 flex gap-3 w-full max-w-sm">
                             <img
                               [src]="variant.previewUrl || variant.product?.image || product.thumbnailUrl"
                               alt=""

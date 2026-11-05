@@ -21,6 +21,11 @@ interface LoginResponse {
   token: string;
 }
 
+export interface VerificationResponse {
+  success: boolean;
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
@@ -60,10 +65,24 @@ export class AuthService {
 
   async register(name: string, email: string, password: string) {
     return firstValueFrom(
-      this.http.post<{ message: string; userId: string; name: string; email: string }>(
+      this.http.post<{ message: string; userId: string; name: string; email: string; requiresVerification: boolean }>(
         `${environment.webPageUserUrl}/register`,
         { name, email, password }
       )
+    );
+  }
+
+  async verifyEmail(token: string) {
+    return firstValueFrom(
+      this.http.get<VerificationResponse>(`${environment.webPageUserUrl}/verify-email`, {
+        params: { token }
+      })
+    );
+  }
+
+  async resendVerification(email: string) {
+    return firstValueFrom(
+      this.http.post<VerificationResponse>(`${environment.webPageUserUrl}/resend-verification`, { email })
     );
   }
 

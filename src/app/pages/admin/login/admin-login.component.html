@@ -10,49 +10,95 @@
     </div>
 
     <div class="grid grid-cols-2 gap-2 bg-brand-gray/80 rounded-2xl p-1">
-      <button type="button" class="rounded-xl py-3 font-bold text-sm" [class.bg-white]="mode === 'login'"
-        (click)="mode = 'login'">Login</button>
-      <button type="button" class="rounded-xl py-3 font-bold text-sm" [class.bg-white]="mode === 'register'"
-        (click)="mode = 'register'">Registro</button>
+      <button type="button" class="rounded-xl py-3 font-bold text-sm transition-colors cursor-pointer" [class.bg-white]="mode === 'login'"
+        (click)="setMode('login')">Login</button>
+      <button type="button" class="rounded-xl py-3 font-bold text-sm transition-colors cursor-pointer" [class.bg-white]="mode === 'register'"
+        (click)="setMode('register')">Registro</button>
     </div>
 
     @if (mode === 'login') {
-    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
-      <label class="flex flex-col gap-2 font-semibold">
-        Correo
-        <input type="email" formControlName="email" class="rounded-2xl border border-black/10 px-4 py-3 font-normal"
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4" novalidate>
+      @if (verificationMessage) {
+        <div class="rounded-2xl bg-brand-purple/10 p-4 text-sm text-black/75">
+          <p>{{ verificationMessage }}</p>
+          @if (verificationEmail) {
+            <button type="button" class="mt-3 font-bold text-brand-purple underline disabled:opacity-60"
+              [disabled]="resendLoading" (click)="resendVerification()">
+              {{ resendLoading ? 'Enviando...' : 'Reenviar enlace de verificación' }}
+            </button>
+          }
+        </div>
+      }
+      <div class="flex flex-col gap-1.5 font-semibold">
+        <label for="login-email">Correo electrónico</label>
+        <input id="login-email" type="email" formControlName="email"
+          class="rounded-2xl border px-4 py-3 font-normal transition-colors outline-none focus:ring-2 focus:ring-brand-purple/30"
+          [class.border-red-500]="isFieldInvalid(form, 'email')"
+          [class.border-black/10]="!isFieldInvalid(form, 'email')"
           placeholder="tu@email.com" />
-      </label>
-      <label class="flex flex-col gap-2 font-semibold">
-        Contraseña
-        <input type="password" formControlName="password"
-          class="rounded-2xl border border-black/10 px-4 py-3 font-normal" placeholder="••••••••" />
-      </label>
+        @if (getFieldError(form, 'email'); as errorMsg) {
+          <span class="text-xs text-red-500 font-medium px-1">{{ errorMsg }}</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5 font-semibold">
+        <label for="login-password">Contraseña</label>
+        <input id="login-password" type="password" formControlName="password"
+          class="rounded-2xl border px-4 py-3 font-normal transition-colors outline-none focus:ring-2 focus:ring-brand-purple/30"
+          [class.border-red-500]="isFieldInvalid(form, 'password')"
+          [class.border-black/10]="!isFieldInvalid(form, 'password')"
+          placeholder="••••••••" />
+        @if (getFieldError(form, 'password'); as errorMsg) {
+          <span class="text-xs text-red-500 font-medium px-1">{{ errorMsg }}</span>
+        }
+      </div>
+
       <button type="submit"
-        class="rounded-2xl bg-brand-dark text-white font-bold py-3 shadow-lg shadow-brand-dark/15 hover:-translate-y-0.5 disabled:opacity-60"
+        class="mt-2 rounded-2xl bg-brand-dark text-white font-bold py-3 shadow-lg shadow-brand-dark/15 hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed cursor-pointer"
         [disabled]="loading">
         {{ loading ? 'Ingresando...' : 'Entrar' }}
       </button>
     </form>
     } @else {
-    <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col gap-5">
-      <label class="flex flex-col gap-2 font-semibold">
-        Nombre
-        <input formControlName="name" class="rounded-2xl border border-black/10 px-4 py-3 font-normal"
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col gap-4" novalidate>
+      <div class="flex flex-col gap-1.5 font-semibold">
+        <label for="register-name">Nombre completo</label>
+        <input id="register-name" type="text" formControlName="name"
+          class="rounded-2xl border px-4 py-3 font-normal transition-colors outline-none focus:ring-2 focus:ring-brand-purple/30"
+          [class.border-red-500]="isFieldInvalid(registerForm, 'name')"
+          [class.border-black/10]="!isFieldInvalid(registerForm, 'name')"
           placeholder="Tu nombre" />
-      </label>
-      <label class="flex flex-col gap-2 font-semibold">
-        Correo
-        <input type="email" formControlName="email" class="rounded-2xl border border-black/10 px-4 py-3 font-normal"
+        @if (getFieldError(registerForm, 'name'); as errorMsg) {
+          <span class="text-xs text-red-500 font-medium px-1">{{ errorMsg }}</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5 font-semibold">
+        <label for="register-email">Correo electrónico</label>
+        <input id="register-email" type="email" formControlName="email"
+          class="rounded-2xl border px-4 py-3 font-normal transition-colors outline-none focus:ring-2 focus:ring-brand-purple/30"
+          [class.border-red-500]="isFieldInvalid(registerForm, 'email')"
+          [class.border-black/10]="!isFieldInvalid(registerForm, 'email')"
           placeholder="tu@email.com" />
-      </label>
-      <label class="flex flex-col gap-2 font-semibold">
-        Contraseña
-        <input type="password" formControlName="password"
-          class="rounded-2xl border border-black/10 px-4 py-3 font-normal" placeholder="Mínimo 4 caracteres" />
-      </label>
+        @if (getFieldError(registerForm, 'email'); as errorMsg) {
+          <span class="text-xs text-red-500 font-medium px-1">{{ errorMsg }}</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5 font-semibold">
+        <label for="register-password">Contraseña</label>
+        <input id="register-password" type="password" formControlName="password"
+          class="rounded-2xl border px-4 py-3 font-normal transition-colors outline-none focus:ring-2 focus:ring-brand-purple/30"
+          [class.border-red-500]="isFieldInvalid(registerForm, 'password')"
+          [class.border-black/10]="!isFieldInvalid(registerForm, 'password')"
+          placeholder="Mínimo 6 caracteres" />
+        @if (getFieldError(registerForm, 'password'); as errorMsg) {
+          <span class="text-xs text-red-500 font-medium px-1">{{ errorMsg }}</span>
+        }
+      </div>
+
       <button type="submit"
-        class="rounded-2xl bg-brand-dark text-white font-bold py-3 shadow-lg shadow-brand-dark/15 hover:-translate-y-0.5 disabled:opacity-60"
+        class="mt-2 rounded-2xl bg-brand-dark text-white font-bold py-3 shadow-lg shadow-brand-dark/15 hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed cursor-pointer"
         [disabled]="loading">
         {{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}
       </button>

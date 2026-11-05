@@ -39,6 +39,11 @@ export const routes: Routes = [
       import('./pages/admin/login/admin-login.component').then(m => m.AdminLoginComponent)
   },
   {
+    path: 'verify-email',
+    loadComponent: () =>
+      import('./pages/auth/verify-email.component').then(m => m.VerifyEmailComponent)
+  },
+  {
     path: 'admin/login',
     loadComponent: () =>
       import('./pages/admin/login/admin-login.component').then(m => m.AdminLoginComponent)
